@@ -1,9 +1,20 @@
+import * as React from 'react';
+import CssBaseline from '@mui/material/CssBaseline';
+import {Routes, Route} from 'react-router-dom'
+import Home from './pages/Home';
+import Nav from './components/Nav';
 
-function App() {
+const App = () => {
+  const currentUser = { username: 'mkellner43', name: 'Matt'}
+
   return (
-    <div className="App">
-      make this a facebook frontend
-    </div>
+    <>
+    <CssBaseline/>
+    <Nav currentUser={currentUser}/>
+    <Routes>
+      <Route element={<Home currentUser={currentUser} />} path="/"/>
+    </Routes>
+    </>
   );
 }
 
