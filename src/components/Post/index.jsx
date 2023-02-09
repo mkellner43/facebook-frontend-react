@@ -6,7 +6,7 @@ import { Box } from '@mui/material';
 const Post = () => {
   function handleSubmit(e) {
     console.log('hi')
-      fetch('http://localhost:3000/api/posts', {
+      fetch('http://localhost:3000/blogs', {
         method: 'post',
         mode: 'cors',
         headers: {

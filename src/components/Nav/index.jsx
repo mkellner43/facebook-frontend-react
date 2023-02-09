@@ -18,6 +18,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const drawerWidth = 240;
 
@@ -66,7 +67,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
-export default function PersistentDrawerLeft({}) {
+export default function PersistentDrawerLeft({currentUser ,setToken}) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -78,6 +79,11 @@ export default function PersistentDrawerLeft({}) {
     setOpen(false);
   };
 
+  const handleLogout = () => {
+    document.cookie = 'access_token= ; max-age=0'
+    sessionStorage.clear()
+    setToken()
+  }
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -129,17 +135,15 @@ export default function PersistentDrawerLeft({}) {
           ))}
         </List>
         <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
+        <List >
+            <ListItem disablePadding>
+              <ListItemButton onClick={handleLogout}>
                 <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  <LogoutIcon />
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary={'Log Out'}/>
               </ListItemButton>
             </ListItem>
-          ))}
         </List>
       </Drawer>
       <Main open={open}>

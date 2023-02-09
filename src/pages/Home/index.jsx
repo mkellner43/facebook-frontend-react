@@ -10,7 +10,7 @@ const Home = ({currentUser}) => {
   let [data, setApiData] = React.useState(null);
 
   React.useEffect(() => {
-    fetch('http://localhost:3000/api/posts', {
+    fetch('http://localhost:3000/api/v1/posts', {
       method: 'get',
       mode: 'cors',
       headers: {
@@ -18,8 +18,12 @@ const Home = ({currentUser}) => {
       }
     })
     .then((response) => response.json())
-    .then((data) => 
-     setApiData(data)
+    .then((data) => {
+      if(data.length > 0){
+        setApiData(data)
+        return console.log(data)
+      }
+    }
     )
     .catch((error) => {
       console.log(error)
@@ -39,13 +43,13 @@ const Home = ({currentUser}) => {
         </Grid2>
         {data?.map((object => {
           return( 
-            <Grid2 item key={object.post.created_at} xs={9}>  
+            <Grid2 item key={object._id} xs={9}>  
               <Cards 
-                post={object.post} 
-                comments={object.comments} 
-                user={object.user} 
+                post={object.blog_post}
+                comments={object.comments}
+                user={object.user}
                 object={object} 
-                variant={'outlined'} 
+                variant={'outlined'}
                 />
             </Grid2>
           )

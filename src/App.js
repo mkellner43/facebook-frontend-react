@@ -3,14 +3,21 @@ import CssBaseline from '@mui/material/CssBaseline';
 import {Routes, Route} from 'react-router-dom'
 import Home from './pages/Home';
 import Nav from './components/Nav';
+import Auth from './pages/Auth';
+import useToken from './useToken';
 
 const App = () => {
   const currentUser = { username: 'mkellner43', name: 'Matt'}
+  let {token, setToken} = useToken();
 
+  if(!token) {
+    return <Auth setToken={setToken} />
+  }
+  
   return (
     <>
     <CssBaseline/>
-    <Nav currentUser={currentUser}/>
+    <Nav currentUser={currentUser} setToken={setToken}/>
     <Routes>
       <Route element={<Home currentUser={currentUser} />} path="/"/>
     </Routes>
