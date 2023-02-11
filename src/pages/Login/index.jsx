@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Login = ({setToken, setHasLogIn}) => {
+const Login = ({setToken, setHasLogIn, setCurrentUser}) => {
   const navigate = useNavigate()
   const [error, setErrors] = useState(null)
   const username = useRef(null)
@@ -28,7 +28,7 @@ const Login = ({setToken, setHasLogIn}) => {
     .then(res => res.json())
     .then(data => { 
       if(data) {
-        // const token = document.cookie.split('=')[1]
+        sessionStorage.setItem('user', JSON.stringify(data))
         setToken()
         navigate('/')
       } 

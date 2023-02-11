@@ -6,9 +6,9 @@ const Auth = ({setToken}) => {
   const [hasLogIn, setHasLogIn] = useState(true);
 
   if(hasLogIn) {
-    return <LogIn setHasLogIn={setHasLogIn} setToken={setToken}/>
+    return <LogIn setHasLogIn={setHasLogIn} setToken={setToken} />
   } else {
-    return <Signup setHasLogIn={setHasLogIn} setToken={setToken}/>
+    return <Signup setHasLogIn={setHasLogIn} setToken={setToken} />
   }
 }
 

@@ -1,17 +1,17 @@
 import * as React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
-import {Routes, Route} from 'react-router-dom'
+import {Routes, Route} from 'react-router-dom';
 import Home from './pages/Home';
 import Nav from './components/Nav';
 import Auth from './pages/Auth';
 import useToken from './useToken';
 
 const App = () => {
-  const currentUser = { username: 'mkellner43', name: 'Matt'}
+  const currentUser = JSON.parse(sessionStorage.getItem('user'))
   let {token, setToken} = useToken();
 
   if(!token) {
-    return <Auth setToken={setToken} />
+    return <Auth setToken={setToken}/>
   }
   
   return (
@@ -19,7 +19,7 @@ const App = () => {
     <CssBaseline/>
     <Nav currentUser={currentUser} setToken={setToken}/>
     <Routes>
-      <Route element={<Home currentUser={currentUser} />} path="/"/>
+      <Route element={<Home currentUser={currentUser} setToken={setToken}/>} path="/"/>
     </Routes>
     </>
   );

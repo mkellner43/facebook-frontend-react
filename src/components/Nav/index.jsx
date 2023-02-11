@@ -67,7 +67,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
-export default function PersistentDrawerLeft({currentUser ,setToken}) {
+export default function PersistentDrawerLeft({setToken}) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
