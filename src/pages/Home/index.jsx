@@ -9,8 +9,6 @@ import Grid2 from '@mui/material/Unstable_Grid2';
 const Home = ({currentUser, setToken}) => {
   const [apiData, setApiData] = React.useState(null);
   const [stale, setStale] = React.useState(false);
-  const [postData, setPostData] = React.useState();
-
 
   React.useEffect(() => {
     fetch('http://localhost:3000/api/v1/posts', {
@@ -40,34 +38,6 @@ const Home = ({currentUser, setToken}) => {
     })
   }, [setToken, stale])
 
-  React.useEffect(() => {
-    if(!postData) return
-    fetch('http://localhost:3000/api/v1/posts', {
-      method: 'post',
-      mode: 'cors',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify(postData)
-    })
-    .then((response) => {
-      if(!response.ok) {
-        document.cookie = 'access_token= ; max-age=0'
-        sessionStorage.clear()
-        setToken()
-      }
-      return response.json()})
-    .then((data) => 
-      console.log(data)
-    )
-    .catch((error) => {
-      console.log(error)
-    })
-    setStale(prevState => !prevState)
-  }, [postData, setToken])
-
   return (
       <Grid2 container mt={2} >
         <Grid2 container item xs={3} justifyContent="center">
@@ -77,20 +47,21 @@ const Home = ({currentUser, setToken}) => {
         </Grid2>
       <Grid2 container item xs={9} rowSpacing={2}>
         <Grid2 item  xs={9}>
-          <Post setPostData={setPostData} postData={postData}/>
+          <Post setStale={setStale} setToken={setToken}/>
         </Grid2>
         {apiData?.map((object => {
           return( 
             <Grid2 item key={object._id} xs={9}>  
               <Cards 
                 post={object.post_body}
-                // comments={object.comments}
+                comments={object.comments}
                 user={object.user.username}
                 date={object.date}
                 object={object}
                 variant={'outlined'}
                 setToken={setToken}
                 currentUser={currentUser}
+                setStale={setStale}
                 />
             </Grid2>
           )
