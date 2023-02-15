@@ -1,19 +1,20 @@
+import './style.scss';
 import React from 'react';
 import { useState, useEffect} from 'react';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import { TextField, Button, Box, Chip, Avatar, Divider, Badge, Modal } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import { Link, useNavigate } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import { parseISO } from 'date-fns/esm';
-import './style.scss';
+import { 
+  TextField, Button, Box, Chip, Avatar, Divider,
+  Badge, Modal, Card, CardActions, CardContent,
+  Typography, IconButton
+} from '@mui/material';
 
 const Cards = ({post, comments, date, user, variant='outlined', object, setToken, currentUser, setStale}) => {
   const UsFormatter = new Intl.DateTimeFormat('en-US');
+  const navigate = useNavigate()
   const [likes, setLikes] = useState(object.likes.filter(like => like._id === currentUser.id).length > 0);
   const [sendLike, setSendLike] = useState();
   const [isCommenting, setIsCommenting] = useState(false);
@@ -128,19 +129,19 @@ const Cards = ({post, comments, date, user, variant='outlined', object, setToken
   }, [confirmedDelete])
 
   const post_comments = comments.map(comment => 
-    <Box sx={{m: 2}} key={comment._id}>
-      <Box sx={{mb: 2}}>
-        <Chip 
-          avatar=
-          {
-            <Avatar>
-              {comment.user.first_name.split('')[0]}
-              {comment.user.last_name.split('')[0]}
-            </Avatar>
-          } 
-          label={comment.user.first_name + " " + comment.user.last_name} 
-          variant='outlined' 
-          />
+      <Box sx={{m: 2}} key={comment._id}>
+        <Box sx={{mb: 2}}>
+          <Chip 
+            avatar=
+            {
+              <Avatar>
+                {comment.user.first_name.split('')[0]}
+                {comment.user.last_name.split('')[0]}
+              </Avatar>
+            } 
+            label={comment.user.first_name + " " + comment.user.last_name} 
+            variant='outlined' 
+            />
         </Box>
         <Box sx={{ml: 2}}>
           <Chip label={comment.comment_body} color="primary"></Chip>
@@ -150,7 +151,7 @@ const Cards = ({post, comments, date, user, variant='outlined', object, setToken
             {UsFormatter.format(parseISO(comment.date))}
           </Typography>
         </Box>
-    </Box>
+      </Box>
   )
   const style = {
     position: 'absolute',
@@ -168,14 +169,13 @@ const Cards = ({post, comments, date, user, variant='outlined', object, setToken
     <Card variant={variant} sx={{width: 1}}>
       <CardContent >
         <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-          <Box sx={{display: 'flex', alignItems: 'center'}}>
-          <Avatar sx={{width: '3rem', height: '3rem', mr: 2}} alt={''}>{currentUser.first_name.split('')[0]}{currentUser.last_name.split('')[0]}</Avatar>
-          <Typography variant="h3" fontSize='1rem' fontWeight={400} noWrap>
-          {user}
-          </Typography>
+          <Box sx={{display: 'flex', alignItems: 'center'}} onClick={() => navigate('/profile', {state: {id: object.user._id, user: object.user}})}>
+            <Avatar sx={{width: '3rem', height: '3rem', mr: 2}} alt={''}>{currentUser.first_name.split('')[0]}{currentUser.last_name.split('')[0]}</Avatar>
+            <Typography variant="h3" fontSize='1rem' fontWeight={400} noWrap>
+            {user}
+            </Typography>
           </Box>
           <Box>
-
           <Typography color="text.secondary" variant='caption' sx={{ml: 1}} noWrap>
           {UsFormatter.format(parseISO(date))}
           </Typography>
@@ -238,7 +238,6 @@ const Cards = ({post, comments, date, user, variant='outlined', object, setToken
             <Button variant="contained" onClick={deleteConfirmed}>Yes</Button>
             <Button variant="contained" onClick={() => setModule(false)}>No</Button>
           </Box>
-
         </Box>
       </Modal>
     </Card>

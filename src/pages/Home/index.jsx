@@ -1,14 +1,12 @@
 import './style.scss';
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
 import Cards from '../../components/Cards';
 import Post from '../../components/Post';
 import Grid2 from '@mui/material/Unstable_Grid2';
 
-const Home = ({currentUser, setToken}) => {
+const Home = ({currentUser, setToken, setStale, stale}) => {
   const [apiData, setApiData] = React.useState(null);
-  const [stale, setStale] = React.useState(false);
 
   React.useEffect(() => {
     fetch('http://localhost:3000/api/v1/posts', {
@@ -39,13 +37,11 @@ const Home = ({currentUser, setToken}) => {
   }, [setToken, stale])
 
   return (
-      <Grid2 container mt={2} >
-        <Grid2 container item xs={3} justifyContent="center">
-        <Tooltip title="Home">
-            <Avatar sx={{width: '5rem', height: '5rem'}} alt={''}>{currentUser.first_name.split('')[0]}{currentUser.last_name.split('')[0]}</Avatar>
-        </Tooltip>
-        </Grid2>
-      <Grid2 container item xs={9} rowSpacing={2}>
+    <Grid2 container mt={2} >
+      <Grid2 container item xs={3} justifyContent="center">
+        <Avatar sx={{width: '5rem', height: '5rem'}} alt={''}>{currentUser.first_name.split('')[0]}{currentUser.last_name.split('')[0]}</Avatar>
+      </Grid2>
+      <Grid2 container item xs={9} rowSpacing={2} direction='column'>
         <Grid2 item  xs={9}>
           <Post setStale={setStale} setToken={setToken}/>
         </Grid2>
@@ -66,8 +62,8 @@ const Home = ({currentUser, setToken}) => {
             </Grid2>
           )
         }))}
-        </Grid2>
       </Grid2>
+    </Grid2>
   )
 }
 

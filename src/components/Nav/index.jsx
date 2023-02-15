@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
+import { Link, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
+import { Avatar, Tooltip } from '@mui/material';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiAppBar from '@mui/material/AppBar';
@@ -16,9 +18,11 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import LogoutIcon from '@mui/icons-material/Logout';
+import FeedIcon from '@mui/icons-material/Feed';
+import MessageIcon from '@mui/icons-material/Message';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 const drawerWidth = 240;
 
@@ -67,8 +71,9 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
-export default function PersistentDrawerLeft({setToken}) {
+export default function PersistentDrawerLeft({setToken, currentUser}) {
   const theme = useTheme();
+  const navigate = useNavigate()
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -98,9 +103,11 @@ export default function PersistentDrawerLeft({setToken}) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{flexGrow: 1, position: 'relative', textAlign: 'right'}}>
-            Facebookie
-          </Typography>
+          <Link to="/" style={{flexGrow: 1, position: 'relative', textAlign: 'right', textDecoration: 'none', color: 'white'}}>
+            <Typography variant="h6" noWrap component="div">
+              Facebookie
+            </Typography>
+          </Link>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -117,33 +124,61 @@ export default function PersistentDrawerLeft({setToken}) {
         open={open}
       >
         <DrawerHeader>
+          <Tooltip title='Profile' placement='bottom-end' arrow>
+            <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', width: 1}} onClick={() => navigate('/profile', {state: {id: currentUser.id, user: currentUser}})}>
+            <Avatar sx={{width: '3rem', height: '3rem'}} alt={''}>{currentUser.first_name.split('')[0]}{currentUser.last_name.split('')[0]}</Avatar>
+              <Typography>{currentUser.username}</Typography>
+            </Box>
+          </Tooltip>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </DrawerHeader>
         <Divider />
         <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+          <ListItem disablePadding>
+            <ListItemButton onClick={() => navigate('/')}>
+              <ListItemIcon>
+                <FeedIcon />
+              </ListItemIcon>
+              <ListItemText primary='Feed' />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <MessageIcon />
+              </ListItemIcon>
+              <ListItemText primary='Messages' />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <PeopleAltIcon />
+              </ListItemIcon>
+              <ListItemText primary='Friends' />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <NotificationsIcon />
+              </ListItemIcon>
+              <ListItemText primary='Notifications' />
+            </ListItemButton>
+          </ListItem>
         </List>
         <Divider />
         <List >
-            <ListItem disablePadding>
-              <ListItemButton onClick={handleLogout}>
-                <ListItemIcon>
-                  <LogoutIcon />
-                </ListItemIcon>
-                <ListItemText primary={'Log Out'}/>
-              </ListItemButton>
-            </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton onClick={handleLogout}>
+              <ListItemIcon>
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Log Out'}/>
+            </ListItemButton>
+          </ListItem>
         </List>
       </Drawer>
       <Main open={open}>
