@@ -103,11 +103,13 @@ export default function PersistentDrawerLeft({setToken, currentUser}) {
           >
             <MenuIcon />
           </IconButton>
-          <Link to="/" style={{flexGrow: 1, position: 'relative', textAlign: 'right', textDecoration: 'none', color: 'white'}}>
-            <Typography variant="h6" noWrap component="div">
-              Facebookie
-            </Typography>
-          </Link>
+          <Box sx={{display: 'flex', width: 1, justifyContent: "flex-end"}}>
+            <Link to="/" style={{textDecoration: 'none', color: 'white'}}>
+              <Typography variant="h6" component="h1">
+                Facebookie
+              </Typography>
+            </Link>
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer
