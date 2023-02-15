@@ -119,9 +119,10 @@ export default function PersistentDrawerLeft({setToken, currentUser}) {
             boxSizing: 'border-box',
           },
         }}
-        variant="persistent"
         anchor="left"
+        role='presentation'
         open={open}
+        onClose={handleDrawerClose}
       >
         <DrawerHeader>
           <Tooltip title='Profile' placement='bottom-end' arrow>
