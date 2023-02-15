@@ -3,7 +3,7 @@ import React from 'react'
 const Friends = () => {
   return (
     <>
-      <h1>friends</h1>
+      <h1 style={{textAlign: 'center'}}>Friends</h1>
     </>
   )
 }

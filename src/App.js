@@ -6,12 +6,14 @@ import Nav from './components/Nav';
 import Auth from './pages/Auth';
 import Profile from './pages/Profile';
 import useToken from './useToken';
+import Friends from './pages/Friends';
+import Messages from './pages/Messages';
+import Notifications from './pages/Notifications';
 
 const App = () => {
   const currentUser = JSON.parse(sessionStorage.getItem('user'))
   let {token, setToken} = useToken();
   const [stale, setStale] = React.useState(false);
-
 
   if(!token) {
     return <Auth setToken={setToken}/>
@@ -22,8 +24,11 @@ const App = () => {
     <CssBaseline/>
     <Nav currentUser={currentUser} setToken={setToken}/>
     <Routes>
-      <Route element={<Home currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale}/>} path="/"/>
+      <Route element={<Home currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale} />} path="/"/>
       <Route element={<Profile currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale} />} path="/profile" />
+      <Route element={<Friends currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale} />} path="/friends" />
+      <Route element={<Messages currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale} />} path='/messages' />
+      <Route element={<Notifications currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale} />} path='/notifications' />
     </Routes>
     </>
   );

@@ -125,7 +125,9 @@ export default function PersistentDrawerLeft({setToken, currentUser}) {
       >
         <DrawerHeader>
           <Tooltip title='Profile' placement='bottom-end' arrow>
-            <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', width: 1}} onClick={() => navigate('/profile', {state: {id: currentUser.id, user: currentUser}})}>
+            <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', width: 1}}
+             onClick={() => navigate('/profile', {state: {id: currentUser.id, user: currentUser}})}
+            >
             <Avatar sx={{width: '3rem', height: '3rem'}} alt={''}>{currentUser.first_name.split('')[0]}{currentUser.last_name.split('')[0]}</Avatar>
               <Typography>{currentUser.username}</Typography>
             </Box>
@@ -145,7 +147,7 @@ export default function PersistentDrawerLeft({setToken, currentUser}) {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={() => navigate('/messages')}>
               <ListItemIcon>
                 <MessageIcon />
               </ListItemIcon>
@@ -153,7 +155,7 @@ export default function PersistentDrawerLeft({setToken, currentUser}) {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={() => navigate('/friends')}>
               <ListItemIcon>
                 <PeopleAltIcon />
               </ListItemIcon>
@@ -161,7 +163,7 @@ export default function PersistentDrawerLeft({setToken, currentUser}) {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={() => navigate('/notifications')}>
               <ListItemIcon>
                 <NotificationsIcon />
               </ListItemIcon>
