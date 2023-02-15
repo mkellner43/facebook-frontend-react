@@ -1,7 +1,8 @@
 import './style.scss';
 import React from 'react';
-import { useState, useEffect} from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import {postLike, postComment, deletePost} from '../../api/posts';
+import { useNavigate } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
@@ -14,24 +15,21 @@ import {
 
 const Cards = ({post, comments, date, user, variant='outlined', object, setToken, currentUser, setStale}) => {
   const UsFormatter = new Intl.DateTimeFormat('en-US');
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [likes, setLikes] = useState(object.likes.filter(like => like._id === currentUser.id).length > 0);
-  const [sendLike, setSendLike] = useState();
   const [isCommenting, setIsCommenting] = useState(false);
   const [comment, setComment] = useState();
-  const [sendComment, setSendComment] = useState(false);
   const [commentsVisable, setCommentsVisable] = useState(false);
-  const [confirmedDelete, setConfirmedDelete] = useState(false);
   const [module, setModule] = useState(false);
 
   const handleLike = () => {
     setLikes(prevState => !prevState)
-    setSendLike(true)
+    postLike(object, setToken)
   }
 
   const submitComment = () => {
     if(comment?.trim().split('').length > 0) {
-      setSendComment(JSON.stringify({comment_body: comment}))
+      postComment(object, setToken, setStale, comment)
       setComment('')
     } 
   }
@@ -41,107 +39,23 @@ const Cards = ({post, comments, date, user, variant='outlined', object, setToken
   }
   
   const deleteConfirmed = () => {
-    setConfirmedDelete(true)
+    deletePost(object, setToken, setStale)
     setModule(false)
   }
 
-  useEffect(() => {
-    if(!sendLike) return
-    fetch(`http://localhost:3000/api/v1/posts/like/${object._id}`, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      credentials: 'include',
-    })
-    .then(res => {
-      if(!res.ok) {
-        document.cookie = 'access_token= ; max-age=0'
-        sessionStorage.clear()
-        setToken()
-      } 
-      else return res.json()
-    })
-    .then(data => console.log(data))
-    .catch(err => {
-      console.error(err)
-    })
-    setSendLike(false)
-  }, [sendLike])
-
-  useEffect(() => {
-    if(!sendComment) return
-    fetch(`http://localhost:3000/api/v1/comments/${object._id}`, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      credentials: 'include',
-      body: sendComment
-    })
-    .then(res => {
-      if(!res.ok) {
-        document.cookie = 'access_token= ; max-age=0'
-        sessionStorage.clear()
-        setToken()
-      } 
-      else {
-        setStale(prevState => !prevState)
-        return res.json()
-      }
-    })
-    .then(data => console.log(data))
-    .catch(err => {
-      console.error(err)
-    })
-    setStale(prevState => !prevState)
-    setSendComment(false)
-  }, [sendComment])
-
-  useEffect(() => {
-    if(!confirmedDelete) return
-    fetch(`http://localhost:3000/api/v1/posts/${object._id}`, {
-      method: 'delete',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      credentials: 'include',
-    })
-    .then(res => {
-      if(!res.ok) {
-        document.cookie = 'access_token= ; max-age=0'
-        sessionStorage.clear()
-        setToken()
-      } 
-      else {
-        setStale(prevState => !prevState)
-        return res.json()
-      }
-    })
-    .then(data => console.log(data))
-    .catch(err => {
-      console.error(err)
-    })
-    setConfirmedDelete(false)
-  }, [confirmedDelete])
-
-  const post_comments = comments.map(comment => 
+  const post_comments = comments
+    .map(comment => 
       <Box sx={{m: 2}} key={comment._id}>
         <Box sx={{mb: 2}}>
           <Chip 
             avatar=
-            {
-              <Avatar>
-                {comment.user.first_name.split('')[0]}
-                {comment.user.last_name.split('')[0]}
-              </Avatar>
-            } 
+            {<Avatar>
+              {comment.user.first_name.split('')[0]}
+              {comment.user.last_name.split('')[0]}
+              </Avatar>} 
             label={comment.user.first_name + " " + comment.user.last_name} 
             variant='outlined' 
-            />
+          />
         </Box>
         <Box sx={{ml: 2}}>
           <Chip label={comment.comment_body} color="primary"></Chip>
@@ -152,7 +66,8 @@ const Cards = ({post, comments, date, user, variant='outlined', object, setToken
           </Typography>
         </Box>
       </Box>
-  )
+    )
+
   const style = {
     position: 'absolute',
     top: '50%',
