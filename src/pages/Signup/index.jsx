@@ -43,8 +43,8 @@ const Signup = ({setToken, setHasLogIn}) => {
       console.error("Error:", err)
       setErrors(err)
     })
-
   }
+  
   return (
     <>
       <form>
