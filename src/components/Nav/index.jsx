@@ -89,6 +89,7 @@ export default function PersistentDrawerLeft({setToken, currentUser}) {
     sessionStorage.clear()
     setToken()
   }
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
