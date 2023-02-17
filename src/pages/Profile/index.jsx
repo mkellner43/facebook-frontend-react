@@ -10,6 +10,7 @@ const Profile = ({currentUser, setToken, setStale, stale}) => {
   const location = useLocation()
 
   useEffect(() => {
+    console.log(location.state)
     fetch(`http://localhost:3000/api/v1/posts/profile/${location.state.id}`, {
       method: 'get',
       mode: 'cors',
@@ -30,20 +31,18 @@ const Profile = ({currentUser, setToken, setStale, stale}) => {
     .then(data => {
       if(data){
         setProfileData(data)
-        console.log(data)
       }
     })
     .catch((error) => {
       console.log(error)
     })
-  }, [setToken, stale, location.state.id])
+  }, [setToken, stale])
 
   return (
     <Grid2 container mt={2} >
     <Grid2 container item xs={3} justifyContent="center">
       <Avatar sx={{width: '5rem', height: '5rem'}} alt={''}>{location.state.user.first_name.split('')[0]}{location.state.user.last_name.split('')[0]}</Avatar>
     </Grid2>
-    {console.log(location.state)}
     <Grid2 container item xs={9} rowSpacing={2} direction="column">
       {currentUser.id === location.state.id &&
       <Grid2 item  xs={9}>

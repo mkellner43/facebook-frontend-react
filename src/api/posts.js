@@ -1,3 +1,30 @@
+export const sendPost = (object, setToken, setStale) => {
+  return fetch('http://localhost:3000/api/v1/posts', {
+    method: 'post',
+    mode: 'cors',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify(object)
+  })
+  .then((response) => {
+    if(!response.ok) {
+      document.cookie = 'access_token= ; max-age=0'
+      sessionStorage.clear()
+      setToken()
+    }
+    return response.json()})
+  .then((data) => {
+    setStale(prevState => !prevState)
+    return 
+  })
+  .catch((error) => {
+    console.log(error)
+  })
+}
+
 export const deletePost = (object, setToken, setStale) => {
   return fetch(`http://localhost:3000/api/v1/posts/${object._id}`, {
     method: 'delete',
@@ -18,7 +45,6 @@ export const deletePost = (object, setToken, setStale) => {
         return res.json()
       }
     })
-    .then(data => console.log(data))
     .catch(err => {
       console.error(err)
     })
@@ -41,7 +67,6 @@ export const postLike = (object, setToken) => {
     } 
     else return res.json()
   })
-  .then(data => console.log(data))
   .catch(err => {
     console.error(err)
   })
@@ -68,7 +93,6 @@ export const postComment = (object, setToken, setStale, comment) => {
         return res.json()
       }
     })
-    .then(data => console.log(data))
     .catch(err => {
       console.error(err)
     })

@@ -15,7 +15,7 @@ const App = () => {
   let {token, setToken} = useToken();
   const [stale, setStale] = React.useState(false);
 
-  if(!token) {
+  if(!token || currentUser?.token !== token) {
     return <Auth setToken={setToken}/>
   }
   

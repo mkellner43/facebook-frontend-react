@@ -17,7 +17,6 @@ export const getFriends = (setToken, setFriends) => {
     else return response.json()
   })
   .then(data => {
-    console.log(data)
     setFriends(data)
   })
   .catch((error) => {
@@ -44,7 +43,6 @@ export const getSuggestions = (setToken, setSuggestions) => {
     else return response.json()
   })
   .then(data => {
-    console.log(data)
     setSuggestions(data)
   })
   .catch((error) => {
@@ -71,7 +69,6 @@ export const getPendingRequests = (setToken, setPending) => {
     else return response.json()
   })
   .then(data => {
-    console.log(data)
     setPending(data)
   })
   .catch((error) => {
@@ -94,13 +91,11 @@ export const sendFriendRequest = (id, setToken, setPending, setSuggestions) => {
       document.cookie = 'access_token= ; max-age=0'
       sessionStorage.clear()
       setToken()
-      console.log(response)
       return
     }
     else return response.json()
   })
   .then(data => {
-    console.log(data)
     setPending(prevState => [data, ...prevState])
     setSuggestions(prevState => prevState.filter(friend => friend._id !== id))
   })
@@ -124,14 +119,12 @@ export const acceptFriend = (id, setToken, setPending, setSuggestions) => {
       document.cookie = 'access_token= ; max-age=0'
       sessionStorage.clear()
       setToken()
-      console.log(response)
       return
     }
     else return response.json()
   })
   .then(data => {
-    console.log(data)
-    setPending(prevState => prevState.filter(friend => friend._id !== id))
+    setPending(prevState => prevState.filter(friend => friend.user.id !== id))
     setSuggestions(prevState => prevState.filter(friend => friend._id !== id))
   })
   .catch((error) => {
@@ -154,13 +147,11 @@ export const declineFriend = (id, setToken, setPending, setSuggestions) => {
       document.cookie = 'access_token= ; max-age=0'
       sessionStorage.clear()
       setToken()
-      console.log(response)
       return
     }
     else return response.json()
   })
   .then(data => {
-    console.log(data)
     setPending(prevState => prevState.filter(friend => friend.request_id !== id))
     getSuggestions(setToken, setSuggestions)
   })

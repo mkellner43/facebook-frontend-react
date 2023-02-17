@@ -9,6 +9,7 @@ const Login = ({setToken, setHasLogIn, setCurrentUser}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    document.cookie = 'access_token= ; max-age=0'
     if(!username.current.value || !password.current.value){
       return setErrors('Username and password are required')
     }

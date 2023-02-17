@@ -28,7 +28,6 @@ const Home = ({currentUser, setToken, setStale, stale}) => {
     .then(data => {
       if(data.length > 0){
         setApiData(data)
-        console.log(data)
       }
     })
     .catch((error) => {

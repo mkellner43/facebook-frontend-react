@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getFriends, getPendingRequests, getSuggestions, sendFriendRequest, acceptFriend, declineFriend } from '../../api/friends';
-import { Button, Card, Typography, Paper } from '@mui/material';
+import { Button, Card, Typography } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import {Chip, Avatar, Box} from '@mui/material';
 
 const Friends = ({setToken}) => {
+  const navigate = useNavigate();
   const [friends, setFriends] = useState([])
   const [pending, setPending] = useState([])
   const [suggestions, setSuggestions] = useState([])
@@ -31,6 +33,7 @@ const Friends = ({setToken}) => {
           } 
         label={friend.user.first_name + " " + friend.user.last_name} 
         variant='outlined' 
+        onClick={() => navigate('/profile', {state: {id: friend.user._id, user: friend.user}})}
       />
     })
   }
@@ -44,11 +47,15 @@ const Friends = ({setToken}) => {
           <Avatar
             variant='outlined'
             sx={{mr: 1}}
+            onClick={() => navigate('/profile', {state: {id: friend.user._id, user: friend.user}})}
             >
             {friend.user.first_name.split('')[0]}
             {friend.user.last_name.split('')[0]}
           </Avatar>
-          <Typography variant='h5' component='h2' flexGrow={1} noWrap>
+          <Typography variant='h5' component='h2' flexGrow={1} noWrap
+           onClick={() => navigate('/profile', {state: {id: friend.user._id, user: friend.user}})}
+          >
+            {console.log(friend.user._id)}
             {friend.user.first_name + ' ' + friend.user.last_name}
           </Typography>
             {friend.type !== 'receiver' ?
@@ -67,20 +74,39 @@ const Friends = ({setToken}) => {
   }
 
   const mapSuggestions = () => {
-    return suggestions[0] === 'No suggestions' ?
-    <Typography key={0}>No suggestions</Typography>
+    return suggestions.length === 0 ?
+    <Typography>No suggestions</Typography>
     :
     suggestions.map(friend => {
       return(
-        <Card key={friend._id} variant="outlined" sx={{display: 'flex', alignItems: 'center',    justifyContent: 'center', p: 2, m: 1, maxWidth: '500px', width: "100vw", minWidth: '200px'}}>
+        <Card 
+          key={friend._id}
+          variant="outlined"
+          sx={{
+            display: 'flex', 
+            alignItems: 'center',
+            justifyContent: 'center', 
+            p: 2, m: 1, maxWidth: '500px',
+             width: "100vw", minWidth: '200px'
+          }}
+        >
           <Avatar
             variant='outlined'
             sx={{mr: 1}}
-          >
+            onClick={() =>
+              navigate('/profile', 
+              {state: {id: friend._id, user: friend}})
+            }
+            >
             {friend.first_name.split('')[0]}
             {friend.last_name.split('')[0]}
           </Avatar>
-          <Typography variant='h5' component='h2' flexGrow={1} noWrap>
+          <Typography variant='h5' component='h2' flexGrow={1} noWrap
+            onClick={() => 
+              navigate('/profile', 
+              {state: {id: friend._id, user: friend}})
+            }
+          >
             {friend.first_name + ' ' +friend.last_name}
           </Typography>
           <Button variant='outlined' size='small' onClick={() => sendFriendRequest(friend._id, setToken, setPending, setSuggestions)}>Add</Button>
