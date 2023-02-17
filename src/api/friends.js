@@ -96,6 +96,7 @@ export const sendFriendRequest = (id, setToken, setPending, setSuggestions) => {
     else return response.json()
   })
   .then(data => {
+    console.log(data)
     setPending(prevState => [data, ...prevState])
     setSuggestions(prevState => prevState.filter(friend => friend._id !== id))
   })
@@ -104,7 +105,7 @@ export const sendFriendRequest = (id, setToken, setPending, setSuggestions) => {
   })
 }
 
-export const acceptFriend = (id, setToken, setPending, setSuggestions) => {
+export const acceptFriend = (id, setToken, setPending, setFriends) => {
   return fetch(`http://localhost:3000/api/v1/friend_requests/accept/${id}`, {
     method: 'post',
     mode: 'cors',
@@ -124,8 +125,8 @@ export const acceptFriend = (id, setToken, setPending, setSuggestions) => {
     else return response.json()
   })
   .then(data => {
-    setPending(prevState => prevState.filter(friend => friend.user.id !== id))
-    setSuggestions(prevState => prevState.filter(friend => friend._id !== id))
+    setPending(prevState => prevState.filter(friend => friend.request_id !== id))
+    setFriends(prevState => [data, ...prevState])
   })
   .catch((error) => {
     console.log(error)
@@ -154,8 +155,11 @@ export const declineFriend = (id, setToken, setPending, setSuggestions) => {
   .then(data => {
     setPending(prevState => prevState.filter(friend => friend.request_id !== id))
     getSuggestions(setToken, setSuggestions)
-  })
+    return 
+  }
+  )
   .catch((error) => {
     console.log(error)
   })
+
 }

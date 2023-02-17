@@ -10,7 +10,6 @@ const Profile = ({currentUser, setToken, setStale, stale}) => {
   const location = useLocation()
 
   useEffect(() => {
-    console.log(location.state)
     fetch(`http://localhost:3000/api/v1/posts/profile/${location.state.id}`, {
       method: 'get',
       mode: 'cors',

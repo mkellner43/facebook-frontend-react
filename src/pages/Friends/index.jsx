@@ -38,6 +38,7 @@ const Friends = ({setToken}) => {
     })
   }
   const mapPending = () => {
+    console.log(pending)
     return pending.length === 0 ?
     <Typography>No pending friend requests</Typography>
     :
@@ -55,12 +56,11 @@ const Friends = ({setToken}) => {
           <Typography variant='h5' component='h2' flexGrow={1} noWrap
            onClick={() => navigate('/profile', {state: {id: friend.user._id, user: friend.user}})}
           >
-            {console.log(friend.user._id)}
             {friend.user.first_name + ' ' + friend.user.last_name}
           </Typography>
             {friend.type !== 'receiver' ?
             <Box sx={{display: 'flex', flexDirection: 'column'}}>
-              <Button variant='outlined' color="success" size='small' onClick={() => acceptFriend(friend.request_id, setToken, setPending, setSuggestions)}>Accept</Button>
+              <Button variant='outlined' color="success" size='small' onClick={() => acceptFriend(friend.request_id, setToken, setPending, setFriends)}>Accept</Button>
               <Button variant='outlined' color="error" size='small' sx={{mt: 1}} onClick={() => declineFriend(friend.request_id, setToken, setPending, setSuggestions)}>Decline</Button>
             </Box>
             :
