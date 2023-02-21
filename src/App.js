@@ -16,13 +16,11 @@ const App = () => {
   let {token, setToken} = useToken();
   const [stale, setStale] = React.useState(false);
 
-  if(!token || currentUser?.token !== token) {
-    return <Auth setToken={setToken}/>
-  }
+  if(!token || currentUser?.token !== token ) return <Auth setToken={setToken}/>
 
   return (
     <>
-    <SocketProvider value={currentUser.id}>
+    <SocketProvider value={currentUser?.id}>
     <CssBaseline/>
       <Nav currentUser={currentUser} setToken={setToken}/>
       <Routes>
