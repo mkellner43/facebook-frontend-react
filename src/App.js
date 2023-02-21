@@ -9,6 +9,7 @@ import useToken from './useToken';
 import Friends from './pages/Friends';
 import Messages from './pages/Messages';
 import Notifications from './pages/Notifications';
+import { SocketProvider } from './context/SocketProvider';
 
 const App = () => {
   const currentUser = JSON.parse(sessionStorage.getItem('user'))
@@ -18,18 +19,20 @@ const App = () => {
   if(!token || currentUser?.token !== token) {
     return <Auth setToken={setToken}/>
   }
-  
+
   return (
     <>
+    <SocketProvider value={currentUser.id}>
     <CssBaseline/>
-    <Nav currentUser={currentUser} setToken={setToken}/>
-    <Routes>
-      <Route element={<Home currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale} />} path="/"/>
-      <Route element={<Profile currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale} />} path="/profile" />
-      <Route element={<Friends currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale} />} path="/friends" />
-      <Route element={<Messages currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale} />} path='/messages' />
-      <Route element={<Notifications currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale} />} path='/notifications' />
-    </Routes>
+      <Nav currentUser={currentUser} setToken={setToken}/>
+      <Routes>
+        <Route element={<Home currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale} token={token} />} path="/"/>
+        <Route element={<Profile currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale} />} path="/profile" />
+        <Route element={<Friends currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale} />} path="/friends" />
+        <Route element={<Messages currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale} />} path='/messages' />
+        <Route element={<Notifications currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale} />} path='/notifications' />
+      </Routes>
+    </SocketProvider>
     </>
   );
 }

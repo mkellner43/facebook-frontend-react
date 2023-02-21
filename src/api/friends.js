@@ -1,4 +1,5 @@
 export const getFriends = (setToken, setFriends) => {
+
   return fetch('http://localhost:3000/api/v1/friend_requests/friends', {
     method: 'get',
     mode: 'cors',
@@ -76,7 +77,7 @@ export const getPendingRequests = (setToken, setPending) => {
   })
 }
 
-export const sendFriendRequest = (id, setToken, setPending, setSuggestions) => {
+export const sendFriendRequest = (id, currentUserID, setToken, setPending, setSuggestions, socket=false) => {
   return fetch(`http://localhost:3000/api/v1/friend_requests/${id}`, {
     method: 'post',
     mode: 'cors',
@@ -99,6 +100,7 @@ export const sendFriendRequest = (id, setToken, setPending, setSuggestions) => {
     console.log(data)
     setPending(prevState => [data, ...prevState])
     setSuggestions(prevState => prevState.filter(friend => friend._id !== id))
+    socket.emit('sendNotification', {senderID: currentUserID, receiverID: id, type: 'Friend Request'})
   })
   .catch((error) => {
     console.log(error)
@@ -163,3 +165,5 @@ export const declineFriend = (id, setToken, setPending, setSuggestions) => {
   })
 
 }
+
+//friending seems to work well. You're dope and kick ass daily. Keep at it. Work on notifications! This may need socket io to work nicely. Learn socket IO and TanStack Query.

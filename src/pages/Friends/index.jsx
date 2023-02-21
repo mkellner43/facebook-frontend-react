@@ -4,8 +4,10 @@ import { getFriends, getPendingRequests, getSuggestions, sendFriendRequest, acce
 import { Button, Card, Typography } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import {Chip, Avatar, Box} from '@mui/material';
+import { useSocket } from '../../context/SocketProvider';
 
-const Friends = ({setToken}) => {
+const Friends = ({setToken, currentUser}) => {
+  const socket = useSocket();
   const navigate = useNavigate();
   const [friends, setFriends] = useState([])
   const [pending, setPending] = useState([])
@@ -109,7 +111,7 @@ const Friends = ({setToken}) => {
           >
             {friend.first_name + ' ' +friend.last_name}
           </Typography>
-          <Button variant='outlined' size='small' onClick={() => sendFriendRequest(friend._id, setToken, setPending, setSuggestions)}>Add</Button>
+          <Button variant='outlined' size='small' onClick={() => sendFriendRequest(friend._id, currentUser.id, setToken, setPending, setSuggestions, socket)}>Add</Button>
         </Card>
       )
     })

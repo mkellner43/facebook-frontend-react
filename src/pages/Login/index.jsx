@@ -28,6 +28,7 @@ const Login = ({setToken, setHasLogIn, setCurrentUser}) => {
     })
     .then(res => res.json())
     .then(data => { 
+      console.log(data)
       if(data) {
         sessionStorage.setItem('user', JSON.stringify(data))
         setToken()

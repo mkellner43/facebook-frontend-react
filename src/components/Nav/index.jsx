@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useSocket } from '../../context/SocketProvider';
 import { styled, useTheme } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
@@ -23,6 +24,7 @@ import FeedIcon from '@mui/icons-material/Feed';
 import MessageIcon from '@mui/icons-material/Message';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+
 
 const drawerWidth = 240;
 
@@ -73,8 +75,26 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 export default function PersistentDrawerLeft({setToken, currentUser}) {
   const theme = useTheme();
-  const navigate = useNavigate()
+  const socket = useSocket();
+  const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
+  const [message, setMessage] = React.useState('');
+  const [notifications, setNotifications] = React.useState([]);
+
+  React.useEffect(() => {
+      socket?.on('connect', () => {
+        setMessage(`You have connected with id ${socket.id}`)
+      }) 
+      return () => socket?.close()
+  }, [socket])
+
+    socket?.onAny((event, ...args) => {
+      console.log(event, args);
+    });    
+
+    socket?.on('getNotification', data => {
+      console.log(data)
+    })
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -85,7 +105,7 @@ export default function PersistentDrawerLeft({setToken, currentUser}) {
   };
 
   const handleLogout = () => {
-    document.cookie = 'access_token= ; max-age=0'
+    // document.cookie = 'access_token= ; max-age=0'
     sessionStorage.clear()
     setToken()
   }
@@ -108,6 +128,7 @@ export default function PersistentDrawerLeft({setToken, currentUser}) {
             <Link to="/" style={{textDecoration: 'none', color: 'white'}}>
               <Typography variant="h6" component="h1">
                 Facebookie
+                {message}
               </Typography>
             </Link>
           </Box>
