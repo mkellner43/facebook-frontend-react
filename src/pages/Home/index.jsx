@@ -14,7 +14,8 @@ const Home = ({currentUser, setToken, setStale, stale}) => {
       mode: 'cors',
       headers: {
         'Accept': 'application/json'
-      }
+      },
+      credentials: 'include'
     })
     .then((response) => {
       if(!response.ok) {

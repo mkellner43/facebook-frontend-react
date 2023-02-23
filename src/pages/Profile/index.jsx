@@ -8,7 +8,7 @@ import { useLocation } from 'react-router-dom';
 const Profile = ({currentUser, setToken, setStale, stale}) => {
   const [profileData, setProfileData] = useState();
   const location = useLocation()
-
+  console.log(location.state)
   useEffect(() => {
     fetch(`http://localhost:3000/api/v1/posts/profile/${location.state.id}`, {
       method: 'get',
@@ -39,7 +39,7 @@ const Profile = ({currentUser, setToken, setStale, stale}) => {
 
   return (
     <Grid2 container mt={2} >
-    <Grid2 container item xs={3} justifyContent="center">
+    <Grid2 container item xs={3} alignItems={'center'} flexDirection='column'>
       <Avatar sx={{width: '5rem', height: '5rem'}} alt={''}>{location.state.user.first_name.split('')[0]}{location.state.user.last_name.split('')[0]}</Avatar>
     </Grid2>
     <Grid2 container item xs={9} rowSpacing={2} direction="column">

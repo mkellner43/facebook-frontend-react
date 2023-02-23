@@ -1,9 +1,10 @@
 import * as React from 'react';
+import { getNotifications } from '../../api/notifications';
 import { useSocket } from '../../context/SocketProvider';
 import { styled, useTheme } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
-import { Avatar, Tooltip } from '@mui/material';
+import { Avatar, Badge, Tooltip } from '@mui/material';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiAppBar from '@mui/material/AppBar';
@@ -88,6 +89,10 @@ export default function PersistentDrawerLeft({setToken, currentUser}) {
       return () => socket?.close()
   }, [socket])
 
+  React.useEffect(() => {
+    getNotifications(setToken, setNotifications)
+  }, [])
+
     socket?.onAny((event, ...args) => {
       console.log(event, args);
     });    
@@ -108,6 +113,16 @@ export default function PersistentDrawerLeft({setToken, currentUser}) {
     document.cookie = 'access_token= ; max-age=0'
     sessionStorage.clear()
     setToken()
+  }
+
+  const getBadgeContent = () => {
+    const number = notifications.filter(notification => notification.status === 'unread')
+    return number.length
+  }
+
+  const updateBadge = () => {
+    setNotifications(notifications.map(notification => {return {...notification, status: 'read'}}))
+    navigate('/notifications')
   }
 
   return (
@@ -188,9 +203,11 @@ export default function PersistentDrawerLeft({setToken, currentUser}) {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton onClick={() => navigate('/notifications')}>
+            <ListItemButton onClick={updateBadge}>
               <ListItemIcon>
-                <NotificationsIcon />
+                <Badge color='primary' badgeContent={getBadgeContent()}>
+                  <NotificationsIcon />
+                </Badge>
               </ListItemIcon>
               <ListItemText primary='Notifications' />
             </ListItemButton>

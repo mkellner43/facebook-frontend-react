@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getFriends, getPendingRequests, getSuggestions, sendFriendRequest, acceptFriend, declineFriend } from '../../api/friends';
-import { Button, Card, Typography } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import {Chip, Avatar, Box} from '@mui/material';
+import {Chip, Avatar, Box, Button, Card, Typography, Modal} from '@mui/material';
 import { useSocket } from '../../context/SocketProvider';
 
 const Friends = ({setToken, currentUser}) => {
@@ -12,6 +11,8 @@ const Friends = ({setToken, currentUser}) => {
   const [friends, setFriends] = useState([])
   const [pending, setPending] = useState([])
   const [suggestions, setSuggestions] = useState([])
+  const [open, setOpen] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState()
 
   useEffect(() => {
     getFriends(setToken, setFriends)
@@ -19,28 +20,54 @@ const Friends = ({setToken, currentUser}) => {
     getSuggestions(setToken, setSuggestions)
   }, [setToken])
 
+  const handleConfirm = (request_id) => {
+    setConfirmDelete(request_id)
+    setOpen(true)
+  }
+
+  const handleDelete = () => {
+    setOpen(false)
+    declineFriend(confirmDelete, setToken, setPending, setSuggestions, setFriends)
+    setConfirmDelete(null)
+  }
+
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
   const mapFriends = () => {
     return friends.length === 0 ?
     <Typography>No current friends</Typography>
     :
     friends.map(friend => {
+      console.log(friend)
       return <Chip
         key={friend.user._id}
         clickable
           avatar= {
-            <Avatar>
+            <Avatar
+            onClick={() => navigate('/profile', {state: {id: friend.user._id, user: friend.user, request_id: friend.request_id}})}
+            >
               {friend.user.first_name.split('')[0]}
               {friend.user.last_name.split('')[0]}
             </Avatar>
           } 
-        label={friend.user.first_name + " " + friend.user.last_name} 
+        label={friend.user.first_name + " " + friend.user.last_name}
+        onDelete={() => handleConfirm(friend.request_id)}
         variant='outlined' 
-        onClick={() => navigate('/profile', {state: {id: friend.user._id, user: friend.user}})}
-      />
+      >
+      </Chip>
     })
   }
   const mapPending = () => {
-    console.log(pending)
     return pending.length === 0 ?
     <Typography>No pending friend requests</Typography>
     :
@@ -141,6 +168,34 @@ const Friends = ({setToken, currentUser}) => {
         </Typography>
           {mapSuggestions()}
       </Grid2>
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            This will remove this friend are you sure you want to continue?
+          </Typography>
+          <Box sx={{display: 'flex', justifyContent: 'space-evenly', mt: 2}}>
+            <Button 
+              variant='contained' 
+              color='error'
+              onClick={handleDelete}  
+            >
+              Yes
+            </Button>
+            <Button 
+              variant='contained'
+              color='success'
+              onClick={() => setOpen(false)}  
+            >
+              No
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </Grid2>
   )
 }

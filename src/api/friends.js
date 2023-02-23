@@ -135,7 +135,7 @@ export const acceptFriend = (id, setToken, setPending, setFriends) => {
   })
 }
 
-export const declineFriend = (id, setToken, setPending, setSuggestions) => {
+export const declineFriend = (id, setToken, setPending, setSuggestions, setFriends) => {
   return fetch(`http://localhost:3000/api/v1/friend_requests/${id}`, {
     method: 'delete',
     mode: 'cors',
@@ -155,8 +155,9 @@ export const declineFriend = (id, setToken, setPending, setSuggestions) => {
     else return response.json()
   })
   .then(data => {
-    setPending(prevState => prevState.filter(friend => friend.request_id !== id))
-    getSuggestions(setToken, setSuggestions)
+      setPending(prevState => prevState.filter(friend => friend.request_id !== id))
+      getSuggestions(setToken, setSuggestions)
+      setFriends && setFriends(prevState => prevState.filter(friend => friend.request_id !== id))
     return 
   }
   )
