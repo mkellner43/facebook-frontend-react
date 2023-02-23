@@ -36,11 +36,9 @@ const Notifications = ({setToken}) => {
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
-      getNotifications(setToken, setNotifications)
+      getNotifications(setToken, setNotifications, readAllNotifications)
     }, [])
-    
-    notifications && readAllNotifications(notifications, setToken)
-
+  
 
   function createNotificationCards() {
     return notifications?.length > 0 ?

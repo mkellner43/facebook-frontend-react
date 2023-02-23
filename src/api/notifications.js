@@ -1,30 +1,3 @@
-export const getNotifications = (setToken, setNotifications) => {
-  return fetch('http://localhost:3000/api/v1/users/notifications', {
-    method: 'get',
-    mode: 'cors',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include',
-  })
-  .then((response) => {
-    if(!response.ok) {
-      document.cookie = 'access_token= ; max-age=0'
-      sessionStorage.clear()
-      setToken()
-    }
-    return response.json()})
-  .then((data) => {
-    setNotifications(data)
-    // setStale(prevState => !prevState)
-    return
-  })
-  .catch((error) => {
-    console.log(error)
-  })
-}
-
 export const readAllNotifications = (notifications=[], setToken) => {
   if(notifications.length === 0) return
   return fetch('http://localhost:3000/api/v1/users/notifications/read', {
@@ -52,6 +25,34 @@ export const readAllNotifications = (notifications=[], setToken) => {
     console.log(error)
   })
 }
+
+export const getNotifications = (setToken, setNotifications, readAllNotifications) => {
+  return fetch('http://localhost:3000/api/v1/users/notifications', {
+    method: 'get',
+    mode: 'cors',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  })
+  .then((response) => {
+    if(!response.ok) {
+      document.cookie = 'access_token= ; max-age=0'
+      sessionStorage.clear()
+      setToken()
+    }
+    return response.json()})
+  .then((data) => {
+    setNotifications(data)
+    readAllNotifications && readAllNotifications(data)
+    return
+  })
+  .catch((error) => {
+    console.log(error)
+  })
+}
+
 
 export const deleteNotification = (id, setToken, setNotifications) => {
   return fetch(`http://localhost:3000/api/v1/users/notifications/${id}`, {
