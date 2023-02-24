@@ -10,6 +10,12 @@ import Friends from './pages/Friends';
 import Messages from './pages/Messages';
 import Notifications from './pages/Notifications';
 import { SocketProvider } from './context/SocketProvider';
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
+
+export const queryClient = new QueryClient();
 
 const App = () => {
   const currentUser = JSON.parse(sessionStorage.getItem('user'))
@@ -19,8 +25,8 @@ const App = () => {
   if(!token || currentUser?.token !== token ) return <Auth setToken={setToken}/>
 
   return (
-    <>
     <SocketProvider value={currentUser?.id}>
+    <QueryClientProvider client={queryClient} >
     <CssBaseline/>
       <Nav currentUser={currentUser} setToken={setToken}/>
       <Routes>
@@ -30,8 +36,8 @@ const App = () => {
         <Route element={<Messages currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale} />} path='/messages' />
         <Route element={<Notifications currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale} />} path='/notifications' />
       </Routes>
+    </QueryClientProvider>
     </SocketProvider>
-    </>
   );
 }
 

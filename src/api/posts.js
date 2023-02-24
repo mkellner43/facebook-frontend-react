@@ -1,3 +1,31 @@
+export const getPosts = (setToken, setApiData) => {
+  return fetch('http://localhost:3000/api/v1/posts', {
+    method: 'get',
+    mode: 'cors',
+    headers: {
+      'Accept': 'application/json'
+    },
+    credentials: 'include'
+  })
+  .then((response) => {
+    if(!response.ok) {
+      document.cookie = 'access_token= ; max-age=0'
+      sessionStorage.clear()
+      setToken()
+      return
+    }
+    else return response.json()
+  })
+  .then(data => {
+    if(data.length > 0){
+      setApiData(data)
+    }
+  })
+  .catch((error) => {
+    console.log(error)
+  })
+}
+
 export const sendPost = (object, setToken, setStale) => {
   return fetch('http://localhost:3000/api/v1/posts', {
     method: 'post',

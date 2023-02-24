@@ -5,36 +5,18 @@ import Cards from '../../components/Cards';
 import Post from '../../components/Post';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import { Typography } from '@mui/material';
+import { getPosts } from '../../api/posts';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient
+} from '@tanstack/react-query';
 
 const Home = ({currentUser, setToken, setStale, stale}) => {
   const [apiData, setApiData] = React.useState(null);
 
   React.useEffect(() => {
-    fetch('http://localhost:3000/api/v1/posts', {
-      method: 'get',
-      mode: 'cors',
-      headers: {
-        'Accept': 'application/json'
-      },
-      credentials: 'include'
-    })
-    .then((response) => {
-      if(!response.ok) {
-        document.cookie = 'access_token= ; max-age=0'
-        sessionStorage.clear()
-        setToken()
-        return
-      }
-      else return response.json()
-    })
-    .then(data => {
-      if(data.length > 0){
-        setApiData(data)
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+    getPosts(setToken, setApiData)
   }, [setToken, stale])
 
   return (
