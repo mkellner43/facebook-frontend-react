@@ -14,6 +14,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 export const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => {
         <Route element={<Messages currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale} />} path='/messages' />
         <Route element={<Notifications currentUser={currentUser} setToken={setToken} setStale={setStale} stale={stale} />} path='/notifications' />
       </Routes>
+    <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
     </SocketProvider>
   );
