@@ -41,7 +41,7 @@ const Profile = ({currentUser, setToken, setStale, stale}) => {
     <Grid2 container spacing={3} sx={{flexDirection: {xs: 'column', sm:'row', lg: 'column'}, justifyContent: {xs: 'space-evenly', sm:'center'}, alignItems: {xs: 'center', sm: 'flex-start', lg: 'center'}}}>
     <Grid2 container item xs={12} sm={2} lg={12} sx={{justifyContent: {xs: "center", sm: 'flex-start'}, alignItems: {xs: 'center', sm: 'center'}}} flexDirection={'column'}>
       <Avatar sx={{width: '5rem', height: '5rem'}} alt={''}>{location.state.user.first_name.split('')[0]}{location.state.user.last_name.split('')[0]}</Avatar>
-      <Typography sx={{mt: 2}}>{location.state.user.username}</Typography>
+      <Typography>{location.state.user.username}</Typography>
     </Grid2>
     <Grid2 container item xs={11} sm={9} lg={7} rowSpacing={2} direction='column'>
       {currentUser.id === location.state.id &&
