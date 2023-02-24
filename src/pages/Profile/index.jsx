@@ -38,17 +38,18 @@ const Profile = ({currentUser, setToken, setStale, stale}) => {
   }, [setToken, stale])
 
   return (
-    <Grid2 container mt={2} >
-    <Grid2 container item xs={3} alignItems={'center'} flexDirection='column'>
+    <Grid2 container spacing={3} sx={{flexDirection: {xs: 'column', sm:'row', lg: 'column'}, justifyContent: {xs: 'space-evenly', sm:'center'}, alignItems: {xs: 'center', sm: 'flex-start', lg: 'center'}}}>
+    <Grid2 container item xs={12} sm={2} lg={12} sx={{justifyContent: {xs: "center", sm: 'flex-start'}, alignItems: {xs: 'center', sm: 'center'}}} flexDirection={'column'}>
       <Avatar sx={{width: '5rem', height: '5rem'}} alt={''}>{location.state.user.first_name.split('')[0]}{location.state.user.last_name.split('')[0]}</Avatar>
+      <Typography sx={{mt: 2}}>{location.state.user.username}</Typography>
     </Grid2>
-    <Grid2 container item xs={9} rowSpacing={2} direction="column">
+    <Grid2 container item xs={11} sm={9} lg={7} rowSpacing={2} direction='column'>
       {currentUser.id === location.state.id &&
-      <Grid2 item  xs={9}>
+      <Grid2 item>
         <Post setStale={setStale} setToken={setToken}/>
       </Grid2>
       }
-      <Grid2 item  xs={9}>
+      <Grid2 item>
         {
           profileData?.length === 0 && 
           <Typography variant='h5' component='h1' textAlign='center' sx={{mt: 3}}>No Posts Yet...</Typography>
@@ -56,7 +57,7 @@ const Profile = ({currentUser, setToken, setStale, stale}) => {
       </Grid2>
       {profileData?.map((object => {
         return( 
-          <Grid2 item key={object._id} xs={9}>  
+          <Grid2 item key={object._id}>  
             <Cards 
               post={object.post_body}
               comments={object.comments}
