@@ -10,23 +10,25 @@ const CreateNotificationCards = ({notification, setToken, setNotifications}) => 
     <Card variant="outlined" width={1} sx={{borderColor: read ? '' : 'blue', m: 1}}
     onMouseOver={() => setRead(true)}
     >
+      {console.log(notification.data.status === 'pending')}
        <CardContent sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', pb: '16px !important'}}>
-         <Typography>
-           {notification.type}
-         </Typography>
-         <Box sx={{display: 'flex', alignItems: 'center'}}>
+         <Box sx={{display: 'flex', alignItems: 'center', flexWrap: 'wrap'}}>
            <Avatar>
              {notification.requester.first_name.split('')[0] + notification.requester.last_name.split('')[0]}
            </Avatar>
            <Typography sx={{ml:1}} >
              {notification.requester.username}
            </Typography>
+         <Typography sx={{ml:1}}>
+            {notification.data.status === 'pending' ? 'sent you a ' : 'accepted your '}
+           {notification.type.toLowerCase()}
+         </Typography>
+         </Box>
            <IconButton 
             onClick={() => deleteNotification(notification._id, setToken, setNotifications)}
-           >
+            >
             <ClearIcon color='error'/>
            </IconButton>
-         </Box>
        </CardContent>
      </Card>
   )
@@ -53,7 +55,7 @@ const Notifications = ({setToken}) => {
     <>
       <h1 style={{textAlign: 'center'}}>Notifications</h1>
       <Box sx={{display: 'flex', width: 1, justifyContent: 'center'}}>
-        <Box sx={{maxWidth: '500px', width: 1}}>
+        <Box sx={{maxWidth: '450px', width: 1}}>
           {createNotificationCards()}
         </Box>
       </Box>
