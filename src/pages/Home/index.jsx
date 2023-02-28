@@ -13,11 +13,13 @@ import {
 } from '@tanstack/react-query';
 
 const Home = ({currentUser, setToken, setStale, stale}) => {
-  const [apiData, setApiData] = React.useState(null);
 
-  React.useEffect(() => {
-    getPosts(setToken, setApiData)
-  }, [setToken, stale])
+  const postsQuery = useQuery({
+    queryKey: ['posts'],
+    queryFn: getPosts
+  })
+
+  if(postsQuery.isError) return <pre>{JSON.stringify(postsQuery.error)}</pre>
 
   return (
     <Grid2 container spacing={3} sx={{flexDirection: {xs: 'column', sm:'row', lg: 'column'}, justifyContent: {xs: 'space-evenly', sm:'center'}, alignItems: {xs: 'center', sm: 'flex-start', lg: 'center'}}}>
@@ -29,7 +31,9 @@ const Home = ({currentUser, setToken, setStale, stale}) => {
         <Grid2 item>
           <Post setStale={setStale} setToken={setToken}/>
         </Grid2>
-        {apiData?.map((object => {
+        {postsQuery.isLoading ? 
+          <Typography>Loading...</Typography> :
+          postsQuery.data.map((object => {
           return( 
             <Grid2 item key={object._id} >  
               <Cards 

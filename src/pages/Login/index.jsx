@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { login } from '../../api/user';
 
-const Login = ({setToken, setHasLogIn, setCurrentUser}) => {
+const Login = ({setToken, setHasLogIn}) => {
   const navigate = useNavigate()
   const [error, setErrors] = useState(null)
   const username = useRef(null)
@@ -13,32 +14,11 @@ const Login = ({setToken, setHasLogIn, setCurrentUser}) => {
     if(!username.current.value || !password.current.value){
       return setErrors('Username and password are required')
     }
-    const data = {
+    const credentials = JSON.stringify({
       username: username.current.value,
       password: password.current.value
-    }
-    fetch('http://localhost:3000/api/v1/users/login', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Credentials': 'true'
-      },
-      credentials: 'include',
-      body: JSON.stringify(data)
     })
-    .then(res => res.json())
-    .then(data => { 
-      console.log(data)
-      if(data) {
-        sessionStorage.setItem('user', JSON.stringify(data))
-        setToken()
-        navigate('/')
-      } 
-    })
-    .catch((err) => {
-      console.error("Error:", err.message)
-      setErrors('Invalid username or password')
-    })
+    login(credentials, setToken, navigate)
   }
   return (
     <>

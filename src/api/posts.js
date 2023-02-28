@@ -1,4 +1,4 @@
-export const getPosts = (setToken, setApiData) => {
+export const getPosts = () => {
   return fetch('http://localhost:3000/api/v1/posts', {
     method: 'get',
     mode: 'cors',
@@ -11,18 +11,20 @@ export const getPosts = (setToken, setApiData) => {
     if(!response.ok) {
       document.cookie = 'access_token= ; max-age=0'
       sessionStorage.clear()
-      setToken()
+      // setToken()
       return
     }
     else return response.json()
   })
   .then(data => {
     if(data.length > 0){
-      setApiData(data)
+      return data
+      // setApiData(data)
     }
   })
   .catch((error) => {
     console.log(error)
+    return error
   })
 }
 
