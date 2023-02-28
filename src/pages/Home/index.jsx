@@ -12,14 +12,13 @@ import {
   useQueryClient
 } from '@tanstack/react-query';
 
-const Home = ({currentUser, setToken, setStale, stale}) => {
+const Home = ({currentUser, setToken}) => {
 
   const postsQuery = useQuery({
     queryKey: ['posts'],
-    queryFn: getPosts
+    queryFn: getPosts,
+    onError: setToken()
   })
-
-  if(postsQuery.isError) return <pre>{JSON.stringify(postsQuery.error)}</pre>
 
   return (
     <Grid2 container spacing={3} sx={{flexDirection: {xs: 'column', sm:'row', lg: 'column'}, justifyContent: {xs: 'space-evenly', sm:'center'}, alignItems: {xs: 'center', sm: 'flex-start', lg: 'center'}}}>
@@ -29,11 +28,11 @@ const Home = ({currentUser, setToken, setStale, stale}) => {
       </Grid2>
       <Grid2 container item xs={11} sm={9} lg={7} rowSpacing={2} direction='column'>
         <Grid2 item>
-          <Post setStale={setStale} setToken={setToken}/>
+          <Post setToken={setToken}/>
         </Grid2>
         {postsQuery.isLoading ? 
           <Typography>Loading...</Typography> :
-          postsQuery.data.map((object => {
+          postsQuery?.data.map((object => {
           return( 
             <Grid2 item key={object._id} >  
               <Cards 
@@ -45,7 +44,6 @@ const Home = ({currentUser, setToken, setStale, stale}) => {
                 variant={'outlined'}
                 setToken={setToken}
                 currentUser={currentUser}
-                setStale={setStale}
                 />
             </Grid2>
           )

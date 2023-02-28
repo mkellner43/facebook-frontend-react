@@ -4,16 +4,30 @@ import Button from '@mui/material/Button';
 import { TextField } from '@mui/material';
 import { Box } from '@mui/material';
 import { sendPost } from '../../api/posts';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 const Post = ({setToken, setStale}) => {
   const [post, setPost] = useState();
+  const queryClient = useQueryClient();
 
-    const handleSubmit = () => {
-      if(!post) return
-      const object = {post_body: post}
-      sendPost(object, setToken, setStale)
-      setPost('')
-    }
+  const send = useMutation({
+    mutationFn: sendPost,
+    onSuccess: data => {
+      queryClient.setQueryData(['posts'], (oldData) => [data, ...oldData])
+      queryClient.invalidateQueries(['posts'])
+    }   
+  })
+
+  const handleSubmit = () => {
+    if(!post) return
+    const object = {post_body: post}
+    send.mutate(object, setToken, setStale)
+    setPost('')
+  }
 
   return (
     <Box >

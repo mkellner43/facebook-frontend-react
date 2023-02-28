@@ -5,7 +5,6 @@ const useToken = () => {
   
   const getToken = () => {
     const token = document.cookie.split('=')[1]
-    console.log(token)
     if(token) return token
   }
   

@@ -11,7 +11,6 @@ export const getPosts = () => {
     if(!response.ok) {
       document.cookie = 'access_token= ; max-age=0'
       sessionStorage.clear()
-      // setToken()
       return
     }
     else return response.json()
@@ -19,7 +18,6 @@ export const getPosts = () => {
   .then(data => {
     if(data.length > 0){
       return data
-      // setApiData(data)
     }
   })
   .catch((error) => {
@@ -28,7 +26,7 @@ export const getPosts = () => {
   })
 }
 
-export const sendPost = (object, setToken, setStale) => {
+export const sendPost = (object, setToken) => {
   return fetch('http://localhost:3000/api/v1/posts', {
     method: 'post',
     mode: 'cors',
@@ -47,8 +45,8 @@ export const sendPost = (object, setToken, setStale) => {
     }
     return response.json()})
   .then((data) => {
-    setStale(prevState => !prevState)
-    return 
+    // setStale(prevState => !prevState)
+    return data
   })
   .catch((error) => {
     console.log(error)
