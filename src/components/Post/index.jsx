@@ -5,7 +5,6 @@ import { TextField } from '@mui/material';
 import { Box } from '@mui/material';
 import { sendPost } from '../../api/posts';
 import {
-  useQuery,
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
