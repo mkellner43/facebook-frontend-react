@@ -12,8 +12,14 @@ import {
   Badge, Modal, Card, CardActions, CardContent,
   Typography, IconButton
 } from '@mui/material';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient
+} from '@tanstack/react-query';
 
-const Cards = ({post, comments, date, user, variant='outlined', object, setToken, currentUser, setStale}) => {
+
+const Cards = ({post, comments, date, user, variant='outlined', object, setToken, currentUser}) => {
   const UsFormatter = new Intl.DateTimeFormat('en-US');
   const navigate = useNavigate();
   const [likes, setLikes] = useState(object.likes.filter(like => like._id === currentUser.id).length > 0);
@@ -21,15 +27,43 @@ const Cards = ({post, comments, date, user, variant='outlined', object, setToken
   const [comment, setComment] = useState();
   const [commentsVisable, setCommentsVisable] = useState(false);
   const [module, setModule] = useState(false);
+  const queryClient = useQueryClient();
+  
+  const deleteThisPost = useMutation({
+    mutationFn: deletePost,
+    onSuccess: (data, variables, context) => {
+      queryClient.setQueryData(['posts'], (oldData) => {
+        return oldData.filter(post => post._id !== variables)
+      })
+      queryClient.invalidateQueries(['posts'])
+    }
+  })
+
+  const addComment = useMutation({
+    mutationFn: postComment,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['posts'])
+    }
+  })
+
+  const addLike = useMutation({
+    mutationFn: postLike,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['posts'])
+      console.log(data)
+      console.log(variables)
+      console.log(context)
+    }
+  })
 
   const handleLike = () => {
     setLikes(prevState => !prevState)
-    postLike(object, setToken)
+    addLike.mutate({object, setToken})
   }
 
   const submitComment = () => {
     if(comment?.trim().split('').length > 0) {
-      postComment(object, setToken, setStale, comment)
+      addComment.mutate({object, setToken, comment})
       setComment('')
     } 
   }
@@ -39,7 +73,7 @@ const Cards = ({post, comments, date, user, variant='outlined', object, setToken
   }
   
   const deleteConfirmed = () => {
-    deletePost(object, setToken, setStale)
+    deleteThisPost.mutate(object._id, setToken)
     setModule(false)
   }
 

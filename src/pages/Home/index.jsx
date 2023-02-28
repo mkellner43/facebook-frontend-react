@@ -17,7 +17,7 @@ const Home = ({currentUser, setToken}) => {
   const postsQuery = useQuery({
     queryKey: ['posts'],
     queryFn: getPosts,
-    onError: setToken()
+    onError: setToken
   })
 
   return (
@@ -30,24 +30,25 @@ const Home = ({currentUser, setToken}) => {
         <Grid2 item>
           <Post setToken={setToken}/>
         </Grid2>
-        {postsQuery.isLoading ? 
-          <Typography>Loading...</Typography> :
-          postsQuery?.data.map((object => {
-          return( 
-            <Grid2 item key={object._id} >  
-              <Cards 
-                post={object.post_body}
-                comments={object.comments}
-                user={object.user.username}
-                date={object.date}
-                object={object}
-                variant={'outlined'}
-                setToken={setToken}
-                currentUser={currentUser}
-                />
-            </Grid2>
-          )
-        }))}
+        {postsQuery.isLoading && <Typography>Loading...</Typography>}
+        {postsQuery.isSuccess && 
+          postsQuery.data.map((object => {
+            return( 
+              <Grid2 item key={object._id} >  
+                <Cards 
+                  post={object.post_body}
+                  comments={object.comments}
+                  user={object.user.username}
+                  date={object.date}
+                  object={object}
+                  variant={'outlined'}
+                  setToken={setToken}
+                  currentUser={currentUser}
+                  />
+              </Grid2>
+            )
+          }))
+        }
       </Grid2>
     </Grid2>
   )

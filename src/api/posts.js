@@ -52,8 +52,8 @@ export const sendPost = (object, setToken) => {
   })
 }
 
-export const deletePost = (object, setToken, setStale) => {
-  return fetch(`http://localhost:3000/api/v1/posts/${object._id}`, {
+export const deletePost = (id, setToken) => {
+  return fetch(`http://localhost:3000/api/v1/posts/${id}`, {
     method: 'delete',
     headers: {
       'Content-Type': 'application/json',
@@ -67,17 +67,17 @@ export const deletePost = (object, setToken, setStale) => {
         sessionStorage.clear()
         setToken()
       } 
-      else {
-        setStale(prevState => !prevState)
-        return res.json()
-      }
+      return res.json()
+    })
+    .then(data => {
+      return data
     })
     .catch(err => {
       console.error(err)
     })
 }
 
-export const postLike = (object, setToken) => {
+export const postLike = ({object, setToken}) => {
   return fetch(`http://localhost:3000/api/v1/posts/like/${object._id}`, {
     method: 'post',
     headers: {
@@ -99,7 +99,7 @@ export const postLike = (object, setToken) => {
   })
 };
 
-export const postComment = (object, setToken, setStale, comment) => {
+export const postComment = ({object, setToken, comment}) => {
   return fetch(`http://localhost:3000/api/v1/comments/${object._id}`, {
     method: 'post',
     headers: {
@@ -115,10 +115,7 @@ export const postComment = (object, setToken, setStale, comment) => {
         sessionStorage.clear()
         setToken()
       } 
-      else {
-        setStale(prevState => !prevState)
-        return res.json()
-      }
+      else return res.json()
     })
     .catch(err => {
       console.error(err)
