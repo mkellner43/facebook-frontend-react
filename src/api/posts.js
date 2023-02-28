@@ -45,7 +45,6 @@ export const sendPost = (object, setToken) => {
     }
     return response.json()})
   .then((data) => {
-    // setStale(prevState => !prevState)
     return data
   })
   .catch((error) => {
