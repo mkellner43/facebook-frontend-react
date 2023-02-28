@@ -1,41 +1,18 @@
-import React, {useState, useEffect} from 'react';
 import Post from '../../components/Post';
 import Cards from '../../components/Cards';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { Avatar, Typography } from '@mui/material';
 import { useLocation } from 'react-router-dom';
+import { profile } from '../../api/user';
+import { useQuery } from '@tanstack/react-query';
 
-const Profile = ({currentUser, setToken, setStale, stale}) => {
-  const [profileData, setProfileData] = useState();
+const Profile = ({currentUser, setToken}) => {
   const location = useLocation()
-  console.log(location.state)
-  useEffect(() => {
-    fetch(`http://localhost:3000/api/v1/posts/profile/${location.state.id}`, {
-      method: 'get',
-      mode: 'cors',
-      headers: {
-        'Accept': 'application/json'
-      },
-      credentials: 'include'
-    })
-    .then((response) => {
-      if(!response.ok) {
-        document.cookie = 'access_token= ; max-age=0'
-        sessionStorage.clear()
-        setToken()
-        return
-      }
-      else return response.json()
-    })
-    .then(data => {
-      if(data){
-        setProfileData(data)
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-  }, [setToken, stale])
+
+  const getProfileData = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => profile(location.state.id, setToken),
+  })
 
   return (
     <Grid2 container spacing={3} sx={{flexDirection: {xs: 'column', sm:'row', lg: 'column'}, justifyContent: {xs: 'space-evenly', sm:'center'}, alignItems: {xs: 'center', sm: 'flex-start', lg: 'center'}}}>
@@ -45,33 +22,37 @@ const Profile = ({currentUser, setToken, setStale, stale}) => {
     </Grid2>
     <Grid2 container item xs={11} sm={9} lg={7} rowSpacing={2} direction='column'>
       {currentUser.id === location.state.id &&
-      <Grid2 item>
-        <Post setStale={setStale} setToken={setToken}/>
-      </Grid2>
+        <Grid2 item>
+          <Post setToken={setToken}/>
+        </Grid2>
       }
-      <Grid2 item>
-        {
-          profileData?.length === 0 && 
-          <Typography variant='h5' component='h1' textAlign='center' sx={{mt: 3}}>No Posts Yet...</Typography>
-        }
-      </Grid2>
-      {profileData?.map((object => {
-        return( 
-          <Grid2 item key={object._id}>  
-            <Cards 
-              post={object.post_body}
-              comments={object.comments}
-              user={object.user.username}
-              date={object.date}
-              object={object}
-              variant={'outlined'}
-              setToken={setToken}
-              currentUser={currentUser}
-              setStale={setStale}
-              />
+      {getProfileData.isLoading && <Typography>Loading...</Typography>}
+      {getProfileData.isSuccess && 
+        <>
+          <Grid2 item>
+            {
+              getProfileData.data.length === 0 && 
+              <Typography variant='h5' component='h1' textAlign='center' sx={{mt: 3}}>No Posts Yet...</Typography>
+            }
           </Grid2>
-        )
-      }))}
+          { getProfileData.data
+            .map((object => {
+              return <Grid2 item key={object._id}>  
+                <Cards 
+                  post={object.post_body}
+                  comments={object.comments}
+                  user={object.user.username}
+                  date={object.date}
+                  object={object}
+                  variant={'outlined'}
+                  setToken={setToken}
+                  currentUser={currentUser}
+                  />
+              </Grid2>
+            }))
+          }
+        </>
+      }
     </Grid2>
   </Grid2>
   )

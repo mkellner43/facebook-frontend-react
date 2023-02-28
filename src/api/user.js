@@ -21,3 +21,29 @@ export const login = (loginCredentials, setToken, navigate) => {
     return err
   })
 }
+
+export const profile = (id, setToken) => {
+  return fetch(`http://localhost:3000/api/v1/posts/profile/${id}`, {
+    method: 'get',
+    mode: 'cors',
+    headers: {
+      'Accept': 'application/json'
+    },
+    credentials: 'include'
+  })
+  .then(response => {
+    if(!response.ok) {
+      document.cookie = 'access_token= ; max-age=0'
+      sessionStorage.clear()
+      setToken()
+      return
+    }
+    else return response.json()
+  })
+  .then(data => {
+    return data
+  })
+  .catch((error) => {
+    console.log(error)
+  })
+}

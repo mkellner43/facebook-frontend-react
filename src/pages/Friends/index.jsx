@@ -1,24 +1,58 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getFriends, getPendingRequests, getSuggestions, sendFriendRequest, acceptFriend, declineFriend } from '../../api/friends';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import {Chip, Avatar, Box, Button, Card, Typography, Modal} from '@mui/material';
 import { useSocket } from '../../context/SocketProvider';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 const Friends = ({setToken, currentUser}) => {
   const socket = useSocket();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [friends, setFriends] = useState([])
-  const [pending, setPending] = useState([])
-  const [suggestions, setSuggestions] = useState([])
   const [open, setOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState()
 
-  useEffect(() => {
-    getFriends(setToken, setFriends)
-    getPendingRequests(setToken, setPending)
-    getSuggestions(setToken, setSuggestions)
-  }, [setToken])
+   const friendQuery = useQuery({queryKey: ['friends'], queryFn: () => getFriends(setToken)})
+   const pendingQuery = useQuery({queryKey: ['pending'], queryFn: () => getPendingRequests(setToken)})
+   const suggestionsQuery = useQuery({queryKey: ['suggestions'], queryFn: () => getSuggestions(setToken)})
+
+   const declineQuery = useMutation({
+      mutationFn: ({request_id, setToken}) =>
+        declineFriend(request_id, setToken),
+      onSuccess: (data, variables, context) => {
+        queryClient.setQueryData(['friends'], (oldData) => 
+        oldData.filter(request => request.request_id !== variables.request_id)
+        )
+        queryClient.setQueryData(['pending'], (oldData) => 
+        oldData.filter(request => request.request_id !== variables.request_id)
+        )
+        queryClient.invalidateQueries(['suggestions'])
+      }
+   })
+
+   const acceptQuery = useMutation({
+    mutationFn: ({request_id, setToken}) => 
+      acceptFriend(request_id, setToken),
+    onSuccess: (data, variables, context) => {
+      queryClient.setQueryData(['pending'], (oldData) => 
+      oldData.filter(request => request.request_id !== variables.request_id)
+      )
+      queryClient.invalidateQueries(['friends'])
+      queryClient.invalidateQueries(['pending'])
+      queryClient.invalidateQueries(['suggestions'])
+    }
+ })
+
+ const sendRequestQuery = useMutation({
+  mutationFn: ({friend, currentUser, setToken, socket}) =>
+    sendFriendRequest(friend, currentUser, setToken, socket),
+  onSuccess: () => {
+    queryClient.invalidateQueries(['friends'])
+    queryClient.invalidateQueries(['pending'])
+    queryClient.invalidateQueries(['suggestions'])
+  }
+ })
 
   const handleConfirm = (request_id) => {
     setConfirmDelete(request_id)
@@ -27,7 +61,7 @@ const Friends = ({setToken, currentUser}) => {
 
   const handleDelete = () => {
     setOpen(false)
-    declineFriend(confirmDelete, setToken, setPending, setSuggestions, setFriends)
+    declineQuery.mutate({request_id: confirmDelete, setToken: setToken})
     setConfirmDelete(null)
   }
 
@@ -44,10 +78,10 @@ const Friends = ({setToken, currentUser}) => {
   };
 
   const mapFriends = () => {
-    return friends.length === 0 ?
+    return friendQuery.data.length === 0 ?
     <Typography>No current friends</Typography>
     :
-    friends.map(friend => {
+    friendQuery.data.map(friend => {
       console.log(friend)
       return <Chip
         key={friend.user._id}
@@ -68,10 +102,10 @@ const Friends = ({setToken, currentUser}) => {
     })
   }
   const mapPending = () => {
-    return pending.length === 0 ?
+    return pendingQuery.data.length === 0 ?
     <Typography>No pending friend requests</Typography>
     :
-    pending.map(friend => {
+    pendingQuery.data.map(friend => {
       return (
         <Card key={friend.request_id} variant="outlined" sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2, m: 1, maxWidth: '500px', width: "100vw", minWidth: '200px'}}>
           <Avatar
@@ -89,8 +123,8 @@ const Friends = ({setToken, currentUser}) => {
           </Typography>
             {friend.type !== 'receiver' ?
             <Box sx={{display: 'flex', flexDirection: 'column'}}>
-              <Button variant='outlined' color="success" size='small' onClick={() => acceptFriend(friend.request_id, setToken, setPending, setFriends)}>Accept</Button>
-              <Button variant='outlined' color="error" size='small' sx={{mt: 1}} onClick={() => declineFriend(friend.request_id, setToken, setPending, setSuggestions)}>Decline</Button>
+              <Button variant='outlined' color="success" size='small' onClick={() => acceptQuery.mutate({request_id: friend.request_id, setToken: setToken})}>Accept</Button>
+              <Button variant='outlined' color="error" size='small' sx={{mt: 1}} onClick={() => declineQuery.mutate({request_id: friend.request_id, setToken: setToken})}>Decline</Button>
             </Box>
             :
             <Box sx={{display: 'flex', flexDirection: 'column'}}>
@@ -103,10 +137,10 @@ const Friends = ({setToken, currentUser}) => {
   }
 
   const mapSuggestions = () => {
-    return suggestions.length === 0 ?
+    return suggestionsQuery.data.length === 0 ?
     <Typography>No suggestions</Typography>
     :
-    suggestions.map(friend => {
+    suggestionsQuery.data.map(friend => {
       return(
         <Card 
           key={friend._id}
@@ -138,7 +172,7 @@ const Friends = ({setToken, currentUser}) => {
           >
             {friend.first_name + ' ' +friend.last_name}
           </Typography>
-          <Button variant='outlined' size='small' onClick={() => sendFriendRequest(friend._id, currentUser.id, setToken, setPending, setSuggestions, socket)}>Add</Button>
+          <Button variant='outlined' size='small' disabled={sendRequestQuery.isLoading} onClick={() => sendRequestQuery.mutate({friend: friend._id, currentUser: currentUser.id, setToken: setToken, socket: socket})}>Add</Button>
         </Card>
       )
     })
@@ -151,7 +185,7 @@ const Friends = ({setToken, currentUser}) => {
           Friends
         </Typography>
         <Box mt={3}>
-          {mapFriends()}
+          {friendQuery.isSuccess && mapFriends()}
         </Box>
       </Grid2>
       <Grid2 container minHeight='300px' alignItems='center' flexDirection='column'>
@@ -159,14 +193,14 @@ const Friends = ({setToken, currentUser}) => {
           Pending Requests
         </Typography>
         <Box mt={3}>
-          {mapPending()}
+          { pendingQuery.isSuccess && mapPending() }
         </Box>
       </Grid2>
       <Grid2 container minHeight='300px' alignItems='center' flexDirection='column'>
         <Typography variant='h4' component='h1' sx={{textAlign: 'center'}}>
           Suggestions
         </Typography>
-          {mapSuggestions()}
+          { suggestionsQuery.isSuccess && mapSuggestions() }
       </Grid2>
       <Modal
         open={open}
@@ -201,4 +235,3 @@ const Friends = ({setToken, currentUser}) => {
 }
 
 export default Friends
-//getting close to getting requests to work!! Keep at it.

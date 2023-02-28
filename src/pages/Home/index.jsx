@@ -8,8 +8,6 @@ import { Typography } from '@mui/material';
 import { getPosts } from '../../api/posts';
 import {
   useQuery,
-  useMutation,
-  useQueryClient
 } from '@tanstack/react-query';
 
 const Home = ({currentUser, setToken}) => {
