@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 const Notifications = ({setToken}) => {
   const notificationQuery = useQuery({
     queryKey: ['notifications'],
-    queryFn: () => getNotifications(setToken)
+    queryFn: () => getNotifications(setToken, true),
   })
 
   function createNotificationCards() {

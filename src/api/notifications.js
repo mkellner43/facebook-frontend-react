@@ -26,7 +26,7 @@ export const readAllNotifications = (notifications=[], setToken) => {
   })
 }
 
-export const getNotifications = (setToken) => {
+export const getNotifications = (setToken, read=false) => {
   return fetch('http://localhost:3000/api/v1/users/notifications', {
     method: 'get',
     mode: 'cors',
@@ -43,8 +43,8 @@ export const getNotifications = (setToken) => {
       setToken()
     }
     return response.json()})
-  .then((data) => {
-    readAllNotifications(data)
+  .then( (data) => {
+    read && readAllNotifications(data)
     return data
   })
   .catch((error) => {

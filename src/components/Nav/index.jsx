@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { getNotifications } from '../../api/notifications';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { useSocket } from '../../context/SocketProvider';
 import { styled, useTheme } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
@@ -76,32 +77,19 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 export default function PersistentDrawerLeft({setToken, currentUser}) {
   const theme = useTheme();
-  const socket = useSocket();
+  // const socket = useSocket();
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
-  const [message, setMessage] = React.useState('');
-  const [notifications, setNotifications] = React.useState([]);
+  // const [message, setMessage] = React.useState('');
+  const queryClient = useQueryClient();
 
-  React.useEffect(() => {
-      socket?.on('connect', () => {
-        setMessage(`You have connected with id ${socket.id}`)
-      }) 
-      return () => socket?.close()
-  }, [socket])
-
-  React.useEffect(() => {
-    getNotifications(setToken, setNotifications)
-  }, [])
-
-    socket?.onAny((event, ...args) => {
-      console.log(event, args);
-    });    
-
-    socket?.on('getNotification', data => {
-      console.log(data)
-    })
+  const notificationQuery = useQuery({
+    queryKey: ['notifications'],
+    queryFn: () => getNotifications(setToken),
+  })
 
   const handleDrawerOpen = () => {
+    queryClient.invalidateQueries(['notifications'])
     setOpen(true);
   };
 
@@ -116,13 +104,8 @@ export default function PersistentDrawerLeft({setToken, currentUser}) {
   }
 
   const getBadgeContent = () => {
-    const number = notifications.filter(notification => notification.status === 'unread')
-    return number.length
-  }
-
-  const updateBadge = () => {
-    setNotifications(notifications.map(notification => {return {...notification, status: 'read'}}))
-    navigate('/notifications')
+    const number = notificationQuery.data?.filter(notification => notification.status === 'unread')
+    return number?.length
   }
 
   return (
@@ -143,7 +126,7 @@ export default function PersistentDrawerLeft({setToken, currentUser}) {
             <Link to="/" style={{textDecoration: 'none', color: 'white'}}>
               <Typography variant="h6" component="h1">
                 Facebookie
-                {message}
+                {/* {message} */}
               </Typography>
             </Link>
           </Box>
@@ -203,7 +186,7 @@ export default function PersistentDrawerLeft({setToken, currentUser}) {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton onClick={updateBadge}>
+            <ListItemButton onClick={() => navigate('/notifications')}>
               <ListItemIcon>
                 <Badge color='primary' badgeContent={getBadgeContent()}>
                   <NotificationsIcon />
