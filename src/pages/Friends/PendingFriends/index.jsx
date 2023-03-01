@@ -27,8 +27,31 @@ const PendingFriends = ({pendingQuery, acceptQuery, declineQuery, setToken}) => 
             </Typography>
               {friend.type !== 'receiver' ?
               <Box sx={{display: 'flex', flexDirection: 'column'}}>
-                <Button variant='outlined' color="success" size='small' onClick={() => acceptQuery.mutate({request_id: friend.request_id, setToken: setToken})}>Accept</Button>
-                <Button variant='outlined' color="error" size='small' sx={{mt: 1}} onClick={() => declineQuery.mutate({request_id: friend.request_id, setToken: setToken})}>Decline</Button>
+                <Button 
+                  variant='outlined' 
+                  color="success" 
+                  size='small' 
+                  onClick={() => 
+                    acceptQuery.mutate({
+                      request_id: friend.request_id, 
+                      setToken: setToken
+                    })
+                  }>
+                  Accept
+                </Button>
+                <Button 
+                  variant='outlined' 
+                  color="error" 
+                  size='small' 
+                  sx={{mt: 1}} 
+                  onClick={() => 
+                    declineQuery.mutate({
+                      request_id: friend.request_id, 
+                      setToken: setToken
+                    })
+                  }>
+                  Decline
+                </Button>
               </Box>
               :
               <Box sx={{display: 'flex', flexDirection: 'column'}}>
