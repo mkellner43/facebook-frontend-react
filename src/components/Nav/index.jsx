@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { getNotifications } from '../../api/notifications';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
-import { useSocket } from '../../context/SocketProvider';
+// import { useSocket } from '../../context/SocketProvider';
 import { styled, useTheme } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
