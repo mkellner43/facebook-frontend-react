@@ -13,7 +13,6 @@ import {
   Typography, IconButton
 } from '@mui/material';
 import {
-  useQuery,
   useMutation,
   useQueryClient
 } from '@tanstack/react-query';
