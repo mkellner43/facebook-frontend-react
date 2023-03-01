@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getFriends, getPendingRequests, getSuggestions, sendFriendRequest, acceptFriend, declineFriend } from '../../api/friends';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import {Chip, Avatar, Box, Button, Card, Typography, Modal} from '@mui/material';
+import {Chip, Avatar, Box, Button, Card, Typography, Modal, Grid} from '@mui/material';
 import { useSocket } from '../../context/SocketProvider';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -82,14 +82,12 @@ const Friends = ({setToken, currentUser}) => {
     <Typography>No current friends</Typography>
     :
     friendQuery.data.map(friend => {
-      console.log(friend)
-      return <Chip
-        key={friend.user._id}
+      return <Grid2 item key={friend.user._id} xs={12}>
+      <Chip
         clickable
+        onClick={() => navigate('/profile', {state: {id: friend.user._id, user: friend.user, request_id: friend.request_id}})}
           avatar= {
-            <Avatar
-            onClick={() => navigate('/profile', {state: {id: friend.user._id, user: friend.user, request_id: friend.request_id}})}
-            >
+            <Avatar>
               {friend.user.first_name.split('')[0]}
               {friend.user.last_name.split('')[0]}
             </Avatar>
@@ -99,6 +97,7 @@ const Friends = ({setToken, currentUser}) => {
         variant='outlined' 
       >
       </Chip>
+      </Grid2>
     })
   }
   const mapPending = () => {
@@ -107,100 +106,106 @@ const Friends = ({setToken, currentUser}) => {
     :
     pendingQuery.data.map(friend => {
       return (
-        <Card key={friend.request_id} variant="outlined" sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2, m: 1, maxWidth: '500px', width: "100vw", minWidth: '200px'}}>
-          <Avatar
-            variant='outlined'
-            sx={{mr: 1}}
+        <Grid2 key={friend.request_id} xs={12}>
+          <Card variant="outlined" sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2}}>
+            <Avatar
+              variant='outlined'
+              sx={{mr: 1}}
+              onClick={() => navigate('/profile', {state: {id: friend.user._id, user: friend.user}})}
+              >
+              {friend.user.first_name.split('')[0]}
+              {friend.user.last_name.split('')[0]}
+            </Avatar>
+            <Typography variant='h5' component='h2' flexGrow={1} noWrap
             onClick={() => navigate('/profile', {state: {id: friend.user._id, user: friend.user}})}
             >
-            {friend.user.first_name.split('')[0]}
-            {friend.user.last_name.split('')[0]}
-          </Avatar>
-          <Typography variant='h5' component='h2' flexGrow={1} noWrap
-           onClick={() => navigate('/profile', {state: {id: friend.user._id, user: friend.user}})}
-          >
-            {friend.user.first_name + ' ' + friend.user.last_name}
-          </Typography>
-            {friend.type !== 'receiver' ?
-            <Box sx={{display: 'flex', flexDirection: 'column'}}>
-              <Button variant='outlined' color="success" size='small' onClick={() => acceptQuery.mutate({request_id: friend.request_id, setToken: setToken})}>Accept</Button>
-              <Button variant='outlined' color="error" size='small' sx={{mt: 1}} onClick={() => declineQuery.mutate({request_id: friend.request_id, setToken: setToken})}>Decline</Button>
-            </Box>
-            :
-            <Box sx={{display: 'flex', flexDirection: 'column'}}>
-              <Chip color='warning' variant='filled'label='PENDING...' />
-            </Box>
-            }
-        </Card>
+              {friend.user.first_name + ' ' + friend.user.last_name}
+            </Typography>
+              {friend.type !== 'receiver' ?
+              <Box sx={{display: 'flex', flexDirection: 'column'}}>
+                <Button variant='outlined' color="success" size='small' onClick={() => acceptQuery.mutate({request_id: friend.request_id, setToken: setToken})}>Accept</Button>
+                <Button variant='outlined' color="error" size='small' sx={{mt: 1}} onClick={() => declineQuery.mutate({request_id: friend.request_id, setToken: setToken})}>Decline</Button>
+              </Box>
+              :
+              <Box sx={{display: 'flex', flexDirection: 'column'}}>
+                <Chip color='warning' variant='filled'label='PENDING...' />
+              </Box>
+              }
+          </Card>
+        </Grid2>
       )
     })
   }
 
   const mapSuggestions = () => {
     return suggestionsQuery.data.length === 0 ?
-    <Typography>No suggestions</Typography>
+    <Grid2 xs={12}>
+      <Typography>No suggestions</Typography>
+    </Grid2>
     :
     suggestionsQuery.data.map(friend => {
       return(
-        <Card 
-          key={friend._id}
-          variant="outlined"
-          sx={{
-            display: 'flex', 
-            alignItems: 'center',
-            justifyContent: 'center', 
-            p: 2, m: 1, maxWidth: '500px',
-             width: "100vw", minWidth: '200px'
-          }}
-        >
-          <Avatar
-            variant='outlined'
-            sx={{mr: 1}}
-            onClick={() =>
-              navigate('/profile', 
-              {state: {id: friend._id, user: friend}})
-            }
+        <Grid2 item key={friend._id} xs={12} > 
+          <Card 
+            variant="outlined"
+            sx={{
+              display: 'flex', 
+              alignItems: 'center',
+              justifyContent: 'center', 
+              p: 2
+            }}
             >
-            {friend.first_name.split('')[0]}
-            {friend.last_name.split('')[0]}
-          </Avatar>
-          <Typography variant='h5' component='h2' flexGrow={1} noWrap
-            onClick={() => 
-              navigate('/profile', 
-              {state: {id: friend._id, user: friend}})
-            }
-          >
-            {friend.first_name + ' ' +friend.last_name}
-          </Typography>
-          <Button variant='outlined' size='small' disabled={sendRequestQuery.isLoading} onClick={() => sendRequestQuery.mutate({friend: friend._id, currentUser: currentUser.id, setToken: setToken, socket: socket})}>Add</Button>
-        </Card>
+            <Avatar
+              variant='outlined'
+              sx={{mr: 1}}
+              onClick={() =>
+                navigate('/profile', 
+                {state: {id: friend._id, user: friend}})
+              }
+              >
+              {friend.first_name.split('')[0]}
+              {friend.last_name.split('')[0]}
+            </Avatar>
+            <Typography variant='h5' component='h2' flexGrow={1} noWrap
+              onClick={() => 
+                navigate('/profile', 
+                {state: {id: friend._id, user: friend}})
+              }
+              >
+              {friend.first_name + ' ' +friend.last_name}
+            </Typography>
+            <Button variant='outlined' size='small' disabled={sendRequestQuery.isLoading} onClick={() => sendRequestQuery.mutate({friend: friend._id, currentUser: currentUser.id, setToken: setToken, socket: socket})}>Add</Button>
+          </Card>
+        </Grid2>
       )
     })
   }
 
   return (
-    <Grid2 container spacing={2} flexDirection='column' justifyContent='center' alignItems='center'>
-      <Grid2 container minHeight='300px' alignItems='center' flexDirection='column'>
+    <Grid2 container spacing={2} justifyContent="space-evenly">
+      <Grid2 container flexDirection='column' alignItems='center'>
         <Typography variant='h4' component='h1'>
           Friends
         </Typography>
-        <Box mt={3}>
+        <Grid2 container m={1} spacing={1} width={'30vw'} minWidth={300} alignItems='center' flexDirection='column' overflow={'scroll'} flexWrap={'nowrap'}>
           {friendQuery.isSuccess && mapFriends()}
-        </Box>
+        </Grid2>
       </Grid2>
-      <Grid2 container minHeight='300px' alignItems='center' flexDirection='column'>
-        <Typography variant='h4' component='h1' sx={{textAlign: 'center'}}>
+      <Grid2 container flexDirection='column' justifyContent='center' alignItems='center'>
+        <Typography variant='h4' component='h1'>
           Pending Requests
         </Typography>
-        <Box mt={3}>
+        <Grid2 container m={1} width={'30vw'} minWidth={300} alignItems='center' flexDirection='column' overflow={'scroll'} flexWrap={'nowrap'}>
           { pendingQuery.isSuccess && mapPending() }
-        </Box>
+        </Grid2>
       </Grid2>
-      <Grid2 container minHeight='300px' alignItems='center' flexDirection='column'>
-        <Typography variant='h4' component='h1' sx={{textAlign: 'center'}}>
+      <Grid2 container flexDirection='column' alignItems='center'>
+        <Typography variant='h4' component='h1'>
           Suggestions
         </Typography>
+        <Grid2 container m={1} width={'30vw'} minWidth={300} alignItems='center' flexDirection='column' overflow={'scroll'} flexWrap={'nowrap'}>
           { suggestionsQuery.isSuccess && mapSuggestions() }
+        </Grid2>
       </Grid2>
       <Modal
         open={open}
