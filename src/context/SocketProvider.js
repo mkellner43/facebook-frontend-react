@@ -11,18 +11,18 @@ export function SocketProvider({id, children}) {
   const [socket, setSocket] = useState()
   
   
-  useEffect(() => {
-    const currentUser = JSON.parse(sessionStorage.getItem('user'))
-    const newSocket = io('http://localhost:3000',
-     { query: {id},
-       auth: {
-        sessionID: currentUser.token,
-        userID: currentUser.id,
-        username: currentUser.username
-      }
-    })
-     setSocket(newSocket)
-  }, [id])
+  // useEffect(() => {
+  //   const currentUser = JSON.parse(sessionStorage.getItem('user'))
+  //   const newSocket = io('http://localhost:3000',
+  //    { query: {id},
+  //      auth: {
+  //       sessionID: currentUser.token,
+  //       userID: currentUser.id,
+  //       username: currentUser.username
+  //     }
+  //   })
+  //    setSocket(newSocket)
+  // }, [id])
 
   //get socket io to work properly and set custom ID to user ID
 

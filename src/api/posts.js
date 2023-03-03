@@ -16,9 +16,7 @@ export const getPosts = () => {
     else return response.json()
   })
   .then(data => {
-    if(data.length > 0){
-      return data
-    }
+    return data
   })
   .catch((error) => {
     console.log(error)

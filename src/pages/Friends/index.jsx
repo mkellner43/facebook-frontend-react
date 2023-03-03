@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { getFriends, getPendingRequests, getSuggestions, sendFriendRequest, acceptFriend, declineFriend } from '../../api/friends';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import {Typography} from '@mui/material';
-import { useSocket } from '../../context/SocketProvider';
+// import { useSocket } from '../../context/SocketProvider';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import DeleteFriend from '../../components/Modals/DeleteFriend';
 import MapFriends from './FriendsContainer';
@@ -10,7 +10,7 @@ import PendingFriends from './PendingFriends';
 import FriendSuggestions from './FriendSuggestions';
 
 const Friends = ({setToken, currentUser}) => {
-  const socket = useSocket();
+  // const socket = useSocket();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState()
@@ -47,8 +47,8 @@ const Friends = ({setToken, currentUser}) => {
   })
 
   const sendRequestQuery = useMutation({
-    mutationFn: ({friend, currentUser, setToken, socket}) =>
-      sendFriendRequest(friend, currentUser, setToken, socket),
+    mutationFn: ({friend, currentUser, setToken}) =>
+      sendFriendRequest(friend, currentUser, setToken),
     onSuccess: () => {
       queryClient.invalidateQueries(['friends'])
       queryClient.invalidateQueries(['pending'])
@@ -90,7 +90,7 @@ const Friends = ({setToken, currentUser}) => {
           Suggestions
         </Typography>
         <Grid2 container m={1} width={'30vw'} minWidth={300} maxHeight="80vh" alignItems='center' flexDirection='column' overflow={'scroll'} flexWrap={'nowrap'}>
-          { suggestionsQuery.isSuccess && <FriendSuggestions suggestionsQuery={suggestionsQuery} sendRequestQuery={sendRequestQuery} currentUser={currentUser} setToken={setToken} socket={socket}/> }
+          { suggestionsQuery.isSuccess && <FriendSuggestions suggestionsQuery={suggestionsQuery} sendRequestQuery={sendRequestQuery} currentUser={currentUser} setToken={setToken}/> }
         </Grid2>
       </Grid2>
       <DeleteFriend handleDelete={handleDelete} setOpen={setOpen} open={open} />

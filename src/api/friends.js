@@ -96,7 +96,7 @@ export const sendFriendRequest = (id, currentUserID, setToken, socket=false) => 
     else return response.json()
   })
   .then(data => {
-    socket.emit('sendNotification', {senderID: currentUserID, receiverID: id, type: 'Friend Request'})
+    // socket.emit('sendNotification', {senderID: currentUserID, receiverID: id, type: 'Friend Request'})
     return data
   })
   .catch((error) => {

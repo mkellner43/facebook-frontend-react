@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Typography, Card, Avatar, Button } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 
-const FriendSuggestions = ({suggestionsQuery, sendRequestQuery, currentUser, setToken, socket}) => {
+const FriendSuggestions = ({suggestionsQuery, sendRequestQuery, currentUser, setToken}) => {
   const navigate = useNavigate();
 
   return (
@@ -47,7 +47,6 @@ const FriendSuggestions = ({suggestionsQuery, sendRequestQuery, currentUser, set
                     friend: friend._id, 
                     currentUser: currentUser.id, 
                     setToken: setToken, 
-                    socket: socket
                   })
                 }>
                 Add
