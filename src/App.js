@@ -9,7 +9,7 @@ import useToken from './useToken';
 import Friends from './pages/Friends';
 import Messages from './pages/Messages';
 import Notifications from './pages/Notifications';
-// import { SocketProvider } from './context/SocketProvider';
+import { SocketProvider } from './context/SocketProvider';
 
 const App = () => {
   let {token, setToken} = useToken();
@@ -18,8 +18,7 @@ const App = () => {
   if(!token || currentUser?.token !== token ) return <Auth setToken={setToken}/>
   
   return (
-    // <SocketProvider value={currentUser?.id}>
-    <>
+    <SocketProvider value={currentUser?.id}>
       <CssBaseline/>
       <Nav currentUser={currentUser} setToken={setToken}/>
       <Routes>
@@ -29,8 +28,7 @@ const App = () => {
         <Route element={<Messages currentUser={currentUser} setToken={setToken} />} path='/messages' />
         <Route element={<Notifications currentUser={currentUser} setToken={setToken} />} path='/notifications' />
       </Routes>
-    </>
-    // </SocketProvider>
+   </SocketProvider>
   );
 }
 

@@ -1,0 +1,39 @@
+.dot1 {
+  height: 0.5rem;
+  width: 0.5rem;
+  border-radius: 50%;
+  background-color: #fff;
+  animation: fade infinite 2s 0.5s;
+}
+
+.dot2 {
+  height: 0.5rem;
+  width: 0.5rem;
+  border-radius: 50%;
+  background-color: #fff;
+  animation: fade infinite 2s 1s;
+}
+
+.dot3 {
+  height: 0.5rem;
+  width: 0.5rem;
+  border-radius: 50%;
+  background-color: #fff;
+  animation: fade infinite 2s 1.5s;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  
+}
