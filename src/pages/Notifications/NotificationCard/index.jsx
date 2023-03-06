@@ -32,15 +32,17 @@ export const CreateNotificationCards = ({notification, setToken, setNotification
            <Typography sx={{ml:1}} >
              {notification.requester.username}
            </Typography>
-         <Typography sx={{ml:1}}>
-            {notification.data.status === 'pending' ? 'sent you a ' : 'accepted your '}
-           {notification.type.toLowerCase()}
+         <Typography sx={{ml: 0.5}}>
+          {notification.type === 'Friend Request' && notification.data.status === 'pending' && 'sent you a '}
+          {notification.type === 'Friend Request' && notification.data.status === 'accepted' && 'accepted your '}
+          {notification.type === 'Message'  && 'sent you a '}
+          {notification.type.toLowerCase()}
          </Typography>
          </Box>
            <IconButton 
             onClick={() => deleteQuery.mutate({notification: notification._id, setToken: setToken})}
             >
-            <ClearIcon color='error'/>
+            <ClearIcon color='error' />
            </IconButton>
        </CardContent>
      </Card>

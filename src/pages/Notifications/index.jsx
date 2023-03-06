@@ -22,7 +22,7 @@ const Notifications = ({setToken}) => {
   } 
   return (
     <>
-      <h1 style={{textAlign: 'center'}}>Notifications</h1>
+      <Typography textAlign='center' variant='h4' component='h1' >Notifications</Typography>
       <Box sx={{display: 'flex', width: 1, justifyContent: 'center'}}>
         <Box sx={{maxWidth: '450px', width: 1}}>
           {createNotificationCards()}
