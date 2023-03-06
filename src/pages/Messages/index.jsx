@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef, useContext} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import { Card, Typography, Button, Avatar, TextField, IconButton, Paper, CircularProgress } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { getFriends } from '../../api/friends';
@@ -17,11 +17,15 @@ const Messages = ({currentUser, setToken}) => {
   const queryClient = useQueryClient();
   const scroll = useRef();
   const socket = useSocket();
-  const [theseData, setTheseData] = useState();
   const [typing, setTyping] = useState(false);
 
+  socket?.on('message received', (data) => {
+    console.log(data)
+    queryClient.setQueryData(['thread'], data)
+    queryClient.invalidateQueries(['messages'])
+    queryClient.invalidateQueries(['thread'])
+  })
 
-  socket?.on('message received', msg => setTheseData(msg))
   socket?.on('typing', () => setTyping(true))
   socket?.on('not typing', () => setTyping(false))
 
@@ -30,8 +34,9 @@ const Messages = ({currentUser, setToken}) => {
   const sendMessageQuery = useMutation({
     mutationFn: (to_id) => sendMessage(message, to_id, setToken),
     onSuccess: (data, variables) => {
-      socket.emit('send message', {id: variables, msg: message})
       setMessage('')
+      socket.emit('send message', {id: variables, thread: data})
+      queryClient.setQueryData(['thread'], data)
       queryClient.invalidateQueries(['messages'])
       queryClient.invalidateQueries(['thread'])
     }
@@ -41,7 +46,7 @@ const Messages = ({currentUser, setToken}) => {
     queryFn: () => getThread(friend._id, setToken),
     enabled: !!friend
   })
-  
+
   useEffect(() => {
     if(!threadQuery) return
     scroll.current?.scrollIntoView({})
@@ -157,21 +162,33 @@ const Messages = ({currentUser, setToken}) => {
               </div>
             </Grid2>}
           </Grid2>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                sendMessageQuery.mutate(friend?._id)
+              }}
+              style={{width: '100%'}}
+            >
           <Grid2 container xs={12} alignItems='center' justifyContent='center'>
             <Grid2 xs={11}>
-              <TextField fullWidth id="outlined-basic" label="Type a new message" variant="outlined" size='small' value={message} onChange={(e) => setMessage(e.target.value)}
+              <TextField fullWidth id="outlined-basic" label="Type a new message" variant="outlined" size='small' value={message} 
+              onChange={(e) => {
+                socket.emit('typing', friend?._id)
+                setMessage(e.target.value)}
+              }
                 onFocus={() => socket.emit('typing', friend?._id)} onBlur={() => socket.emit('not typing', friend?._id)}
-              />
+                />
             </Grid2>
             <Grid2 xs={1} columns={1}>
               <IconButton 
-                onClick={() => sendMessageQuery.mutate(friend?._id)}
+                type='submit'
                 disabled={message.trim().length === 0}
-                >
+              >
               <Send color='primary'/>
             </IconButton>
             </Grid2>
           </Grid2>
+          </form>
           </>
           }
       </Grid2>
@@ -181,6 +198,4 @@ const Messages = ({currentUser, setToken}) => {
 
 export default Messages;
 
-
 // add notifications, live connection, and status indicators, ... bubble on typing would be cool
-// fix friend not being set when you leave chat open and nav to a new page then come back to messages.
