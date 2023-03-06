@@ -20,7 +20,6 @@ const Messages = ({currentUser, setToken}) => {
   const [typing, setTyping] = useState(false);
 
   socket?.on('message received', (data) => {
-    console.log(data)
     queryClient.setQueryData(['thread'], data)
     queryClient.invalidateQueries(['messages'])
     queryClient.invalidateQueries(['thread'])
