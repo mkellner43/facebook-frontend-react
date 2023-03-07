@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { getFriends, getPendingRequests, getSuggestions, sendFriendRequest, acceptFriend, declineFriend } from '../../api/friends';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import {Typography} from '@mui/material';
-// import { useSocket } from '../../context/SocketProvider';
+import { useSocket } from '../../context/SocketProvider';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import DeleteFriend from '../../components/Modals/DeleteFriend';
 import MapFriends from './FriendsContainer';
@@ -10,7 +10,7 @@ import PendingFriends from './PendingFriends';
 import FriendSuggestions from './FriendSuggestions';
 
 const Friends = ({setToken, currentUser}) => {
-  // const socket = useSocket();
+  const socket = useSocket();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState()
@@ -34,9 +34,11 @@ const Friends = ({setToken, currentUser}) => {
   })
 
   const acceptQuery = useMutation({
-    mutationFn: ({request_id, setToken}) => 
+    mutationFn: ({request_id, friend_id, setToken}) => 
       acceptFriend(request_id, setToken),
     onSuccess: (data, variables, context) => {
+      console.log(variables)
+      socket?.emit('notification', {to_id: variables.friend_id, type: 'Friend Request', msg: `${currentUser.username} accepted your friend request!`})
       queryClient.setQueryData(['pending'], (oldData) => 
       oldData.filter(request => request.request_id !== variables.request_id)
       )
@@ -49,7 +51,9 @@ const Friends = ({setToken, currentUser}) => {
   const sendRequestQuery = useMutation({
     mutationFn: ({friend, currentUser, setToken}) =>
       sendFriendRequest(friend, currentUser, setToken),
-    onSuccess: () => {
+    onSuccess: (variables) => {
+      console.log(variables)
+      socket?.emit('notification', {to_id: variables.user._id, type: 'Friend Request', msg: `${currentUser.username} sent you a friend request!`})
       queryClient.invalidateQueries(['friends'])
       queryClient.invalidateQueries(['pending'])
       queryClient.invalidateQueries(['suggestions'])

@@ -34,6 +34,7 @@ const PendingFriends = ({pendingQuery, acceptQuery, declineQuery, setToken}) => 
                   onClick={() => 
                     acceptQuery.mutate({
                       request_id: friend.request_id, 
+                      friend_id: friend.user._id,
                       setToken: setToken
                     })
                   }>
@@ -46,7 +47,7 @@ const PendingFriends = ({pendingQuery, acceptQuery, declineQuery, setToken}) => 
                   sx={{mt: 1}} 
                   onClick={() => 
                     declineQuery.mutate({
-                      request_id: friend.request_id, 
+                      request_id: friend.request_id,
                       setToken: setToken
                     })
                   }>
