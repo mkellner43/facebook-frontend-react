@@ -179,4 +179,6 @@ const Messages = ({currentUser, setToken}) => {
 
 export default Messages;
 
-// add notifications, live connection, and status indicators, ... bubble on typing would be cool
+// add a notification snackbar on incoming notifications
+// add ability to post images 
+// add img on avatar 

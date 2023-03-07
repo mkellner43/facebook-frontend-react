@@ -90,13 +90,13 @@ const Cards = ({post, comments, date, user, variant='outlined', object, setToken
             variant='outlined' 
           />
         </Box>
-        <Box sx={{ml: 2}}>
-          <Chip label={comment.comment_body} color="primary"></Chip>
-        </Box>
         <Box sx={{ml: 3}}>
           <Typography color="text.secondary" variant='caption' noWrap>
             {UsFormatter.format(parseISO(comment.date))}
           </Typography>
+        </Box>
+        <Box sx={{ml: 2}}>
+          <Chip label={comment.comment_body} color="primary"></Chip>
         </Box>
       </Box>
     )
