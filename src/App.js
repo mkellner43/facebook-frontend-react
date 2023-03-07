@@ -17,6 +17,7 @@ const App = () => {
 
   if(!token || currentUser?.token !== token ) return <Auth setToken={setToken}/>
   
+  
   return (
     <SocketProvider value={currentUser?.id}>
       <CssBaseline/>

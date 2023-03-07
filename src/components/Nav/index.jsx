@@ -1,13 +1,12 @@
-import * as React from 'react';
+import React, {useEffect, useState} from 'react';
 import { getNotifications } from '../../api/notifications';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
-// import { useSocket } from '../../context/SocketProvider';
+import { useSocket } from '../../context/SocketProvider';
 import { styled, useTheme } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
-import { Avatar, Badge, Tooltip } from '@mui/material';
+import { Avatar, Badge, Tooltip, Snackbar, Alert } from '@mui/material';
 import Drawer from '@mui/material/Drawer';
-import CssBaseline from '@mui/material/CssBaseline';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
@@ -77,15 +76,26 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 export default function PersistentDrawerLeft({setToken, currentUser}) {
   const theme = useTheme();
-  // const socket = useSocket();
+  const socket = useSocket();
   const navigate = useNavigate();
-  const [open, setOpen] = React.useState(false);
-  // const [message, setMessage] = React.useState('');
+  const [open, setOpen] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false)
+  const [notificationMsg, setNotificationMsg] = useState(null);
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    socket?.on('notification', (data) => {
+      setNotificationMsg(data)
+      setNotificationOpen(true)
+    })
+    return () => {
+      socket?.off('notification')
+    };
+  }, [socket])
 
   const notificationQuery = useQuery({
     queryKey: ['notifications'],
-    queryFn: () => getNotifications(setToken),
+    queryFn: () => getNotifications(setToken)
   })
 
   const handleDrawerOpen = () => {
@@ -108,9 +118,17 @@ export default function PersistentDrawerLeft({setToken, currentUser}) {
     return number?.length
   }
 
+  const handleClose = () => {
+    setNotificationOpen(false)
+  }
+
   return (
     <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
+      <Snackbar open={notificationOpen} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
+        <Alert onClose={handleClose} severity="info" sx={{ width: '100%' }}>
+          {notificationMsg}
+        </Alert>
+      </Snackbar>
       <AppBar position="fixed" open={open}>
         <Toolbar>
           <IconButton
@@ -126,7 +144,6 @@ export default function PersistentDrawerLeft({setToken, currentUser}) {
             <Link to="/" style={{textDecoration: 'none', color: 'white'}}>
               <Typography variant="h6" component="h1">
                 Facebookie
-                {/* {message} */}
               </Typography>
             </Link>
           </Box>

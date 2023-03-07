@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { deleteNotification } from '../../../api/notifications';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-export const CreateNotificationCards = ({notification, setToken, setNotifications}) => {
+export const CreateNotificationCards = ({notification, setToken}) => {
   const [read, setRead] = useState(notification.status === 'read')
   const queryClient = useQueryClient();
 
