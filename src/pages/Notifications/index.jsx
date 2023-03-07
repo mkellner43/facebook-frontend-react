@@ -11,14 +11,10 @@ const Notifications = ({setToken}) => {
 
   function createNotificationCards() {
     return notificationQuery.isSuccess &&
-     notificationQuery.data.length > 0 ?
+     notificationQuery.data.length > 0 &&
      notificationQuery.data
      .map(notification => 
      <CreateNotificationCards key={notification._id} notification={notification} setToken={setToken} />)
-      :
-      <Typography textAlign={'center'}>
-        No new notifications
-      </Typography>;
   } 
   return (
     <>
@@ -26,6 +22,10 @@ const Notifications = ({setToken}) => {
       <Box sx={{display: 'flex', width: 1, justifyContent: 'center'}}>
         <Box sx={{maxWidth: '450px', width: 1}}>
           {createNotificationCards()}
+          {notificationQuery.isSuccess &&
+           notificationQuery.data.length === 0 &&
+           <Typography mt={5}variant='h5' component='h2' textAlign='center'>No new notifications</Typography>
+           }
         </Box>
       </Box>
     </>
