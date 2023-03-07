@@ -22,7 +22,7 @@ const Notifications = ({setToken}) => {
       <Box sx={{display: 'flex', width: 1, justifyContent: 'center'}}>
         <Box sx={{maxWidth: '450px', width: 1}}>
           {createNotificationCards()}
-          {!notificationQuery.data.length &&
+          {!notificationQuery.data?.length &&
            <Typography mt={5}variant='h5' component='h2' textAlign='center'>No new notifications</Typography>
            }
         </Box>

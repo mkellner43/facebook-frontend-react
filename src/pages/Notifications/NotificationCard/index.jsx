@@ -13,7 +13,7 @@ export const CreateNotificationCards = ({notification, setToken}) => {
       deleteNotification(notification, setToken),
     onSuccess: (data, variables, context) => {
       queryClient.setQueryData(['notifications'], (oldData) => 
-      oldData.filter(request => request.request_id !== variables.request_id)
+        oldData.filter(request => request._id !== variables.notification)
       )
       queryClient.invalidateQueries(['notifications'])
     }
