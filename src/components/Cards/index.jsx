@@ -76,6 +76,8 @@ const Cards = ({post, comments, date, user, variant='outlined', object, setToken
     setModule(false)
   }
 
+  console.log(object)
+
   const post_comments = comments
     .map(comment => 
       <Box sx={{m: 2}} key={comment._id}>
@@ -139,6 +141,9 @@ const Cards = ({post, comments, date, user, variant='outlined', object, setToken
         <Typography sx={{ m: 3 }} variant="body1" fontWeight={200} noWrap>
           {post}
         </Typography>
+        <Box>
+          {object.image && <img width='100%' alt={post} src={object.image} style={{borderRadius: '15px'}}/>}
+        </Box>
         <CardActions>
         <IconButton size="small" onClick={handleLike}>
           <ThumbUpIcon color={likes ? 'primary' : ''}/>

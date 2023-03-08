@@ -24,7 +24,7 @@ export const getPosts = () => {
   })
 }
 
-export const sendPost = (object, setToken) => {
+export const sendPost = (object ,setToken) => {
   return fetch('http://localhost:3000/api/v1/posts', {
     method: 'post',
     mode: 'cors',
@@ -33,7 +33,7 @@ export const sendPost = (object, setToken) => {
       'Content-Type': 'application/json',
     },
     credentials: 'include',
-    body: JSON.stringify(object)
+    body: object
   })
   .then((response) => {
     if(!response.ok) {
