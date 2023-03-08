@@ -168,7 +168,7 @@ export default function PersistentDrawerLeft({setToken, currentUser}) {
             <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', width: 1, p: 2}}
              onClick={() => navigate('/profile', {state: {id: currentUser.id, user: currentUser}})}
             >
-            <Avatar sx={{width: '3rem', height: '3rem'}} alt={''}>{currentUser.first_name.split('')[0]}{currentUser.last_name.split('')[0]}</Avatar>
+            <Avatar src={currentUser.avatar?.image} sx={{width: '3rem', height: '3rem'}} alt={''}>{currentUser.first_name.split('')[0]}{currentUser.last_name.split('')[0]}</Avatar>
               <Typography>{currentUser.username}</Typography>
             </Box>
           </Tooltip>

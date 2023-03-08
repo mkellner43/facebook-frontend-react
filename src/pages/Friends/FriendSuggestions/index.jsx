@@ -27,6 +27,7 @@ const FriendSuggestions = ({suggestionsQuery, sendRequestQuery, currentUser, set
                   navigate('/profile', 
                   {state: {id: friend._id, user: friend}})
                 }
+                src={friend.avatar?.image}
               >
                 {friend.first_name.split('')[0]}
                 {friend.last_name.split('')[0]}

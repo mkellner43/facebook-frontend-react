@@ -16,9 +16,10 @@ import {
   useMutation,
   useQueryClient
 } from '@tanstack/react-query';
+import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 
 
-const Cards = ({post, comments, date, user, variant='outlined', object, setToken, currentUser}) => {
+const Cards = ({post, comments, date, user, variant='outlined', avatar, object, setToken, currentUser}) => {
   const UsFormatter = new Intl.DateTimeFormat('en-US');
   const navigate = useNavigate();
   const [likes, setLikes] = useState(object.likes.filter(like => like._id === currentUser.id).length > 0);
@@ -76,8 +77,6 @@ const Cards = ({post, comments, date, user, variant='outlined', object, setToken
     setModule(false)
   }
 
-  console.log(object)
-
   const post_comments = comments
     .map(comment => 
       <Box sx={{m: 2}} key={comment._id}>
@@ -116,11 +115,12 @@ const Cards = ({post, comments, date, user, variant='outlined', object, setToken
   };
   
   return (
-    <Card variant={variant} sx={{width: 1}}>
+    <Grid2 xs={12}>
+    <Card variant={variant} width={1}>
       <CardContent >
         <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
           <Box sx={{display: 'flex', alignItems: 'center'}} onClick={() => navigate('/profile', {state: {id: object.user._id, user: object.user}})}>
-            <Avatar sx={{width: '3rem', height: '3rem', mr: 2}} alt={''}>{currentUser.first_name.split('')[0]}{currentUser.last_name.split('')[0]}</Avatar>
+            <Avatar src={avatar} sx={{width: '3rem', height: '3rem', mr: 2}} alt={''}>{currentUser.first_name.split('')[0]}{currentUser.last_name.split('')[0]}</Avatar>
             <Typography variant="h3" fontSize='1rem' fontWeight={400} noWrap>
             {user}
             </Typography>
@@ -141,9 +141,9 @@ const Cards = ({post, comments, date, user, variant='outlined', object, setToken
         <Typography sx={{ m: 3 }} variant="body1" fontWeight={200} noWrap>
           {post}
         </Typography>
-        <Box>
+        <Grid2 xs={12} justifyContent='center' alignItems='center'>
           {object.image && <img width='100%' alt={post} src={object.image} style={{borderRadius: '15px'}}/>}
-        </Box>
+        </Grid2>
         <CardActions>
         <IconButton size="small" onClick={handleLike}>
           <ThumbUpIcon color={likes ? 'primary' : ''}/>
@@ -171,7 +171,7 @@ const Cards = ({post, comments, date, user, variant='outlined', object, setToken
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             size='small'
-          />
+            />
           <Button variant="contained" size='small' sx={{mt: 1}} onClick={submitComment}>Comment</Button>
         </Box>
         :
@@ -182,7 +182,7 @@ const Cards = ({post, comments, date, user, variant='outlined', object, setToken
       <Modal
         open={module}
         onClose={() => setModule(false)}
-      >
+        >
         <Box sx={style}>
           <Typography variant="h6" component="h2" textAlign={'center'}>
             Permanently delete this post?
@@ -194,6 +194,7 @@ const Cards = ({post, comments, date, user, variant='outlined', object, setToken
         </Box>
       </Modal>
     </Card>
+    </Grid2>
   )
 }
 

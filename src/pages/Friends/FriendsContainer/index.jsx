@@ -14,7 +14,7 @@ const MapFriends = ({friendQuery, handleConfirm}) => {
       clickable
       onClick={() => navigate('/profile', {state: {id: friend.user._id, user: friend.user, request_id: friend.request_id}})}
         avatar= {
-          <Avatar>
+          <Avatar src={friend.user.avatar?.image}>
             {friend.user.first_name.split('')[0]}
             {friend.user.last_name.split('')[0]}
           </Avatar>

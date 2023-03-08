@@ -35,5 +35,4 @@ const App = () => {
 
 export default App;
 
-
 // goal- create a facebook front end to use rails as the back end

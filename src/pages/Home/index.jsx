@@ -6,9 +6,7 @@ import Post from '../../components/Post';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import { Typography } from '@mui/material';
 import { getPosts } from '../../api/posts';
-import {
-  useQuery,
-} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 const Home = ({currentUser, setToken}) => {
 
@@ -32,12 +30,13 @@ const Home = ({currentUser, setToken}) => {
         {postsQuery.isSuccess && 
           postsQuery.data.map((object => {
             return( 
-              <Grid2 item key={object._id} >  
+              <Grid2 container key={object._id} xs={12}>  
                 <Cards 
                   post={object.post_body}
                   comments={object.comments}
                   user={object.user.username}
                   date={object.date}
+                  avatar={object.user.avatar?.image}
                   object={object}
                   variant={'outlined'}
                   setToken={setToken}

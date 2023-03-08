@@ -16,6 +16,7 @@ const PendingFriends = ({pendingQuery, acceptQuery, declineQuery, setToken}) => 
               variant='outlined'
               sx={{mr: 1}}
               onClick={() => navigate('/profile', {state: {id: friend.user._id, user: friend.user}})}
+              src={friend.user.avatar?.image}
               >
               {friend.user.first_name.split('')[0]}
               {friend.user.last_name.split('')[0]}

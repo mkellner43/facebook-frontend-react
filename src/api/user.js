@@ -47,3 +47,31 @@ export const profile = (id, setToken) => {
     console.log(error)
   })
 }
+
+export const updateAvatar = (avatar, setToken) => {
+  const sendableAvatar = JSON.stringify({avatar: avatar})
+    return fetch('http://localhost:3000/api/v1/users/avatar', {
+      method: 'put',
+      mode: 'cors',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: sendableAvatar
+    })
+    .then((response) => {
+      if(response.status === 401) {
+        document.cookie = 'access_token= ; max-age=0'
+        sessionStorage.clear()
+        setToken()
+      }
+      return response.json()})
+    .then((data) => {
+      sessionStorage.setItem('user', JSON.stringify(data))
+      return data
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  }
