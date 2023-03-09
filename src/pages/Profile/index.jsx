@@ -3,7 +3,7 @@ import Post from '../../components/Post';
 import Cards from '../../components/Cards';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { Avatar, Typography, Button, Modal, Box } from '@mui/material';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { profile } from '../../api/user';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import AvatarEdit from 'react-avatar-edit';
@@ -14,6 +14,9 @@ const Profile = ({currentUser, setToken, setCurrentUser}) => {
   const [avatarModule, setAvatarModule] = useState(false);
   const [selectedImage, setSelectedImage] = useState(false);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  location.state === null && navigate('/')
 
   const getProfileData = useQuery({
     queryKey: ['profile'],
@@ -90,8 +93,9 @@ const Profile = ({currentUser, setToken, setCurrentUser}) => {
         </Box>
       </Modal>
     </Grid2>
+    {console.log(currentUser)}
     <Grid2 container item xs={11} sm={9} lg={7} rowSpacing={2} direction='column'>
-      {currentUser.id === location.state.id &&
+      {currentUser?.id === location.state?.id &&
         <Grid2 item>
           <Post setToken={setToken}/>
         </Grid2>
