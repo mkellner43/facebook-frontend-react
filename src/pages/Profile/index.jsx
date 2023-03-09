@@ -93,7 +93,6 @@ const Profile = ({currentUser, setToken, setCurrentUser}) => {
         </Box>
       </Modal>
     </Grid2>
-    {console.log(currentUser)}
     <Grid2 container item xs={11} sm={9} lg={7} rowSpacing={2} direction='column'>
       {currentUser?.id === location.state?.id &&
         <Grid2 item>
@@ -102,31 +101,31 @@ const Profile = ({currentUser, setToken, setCurrentUser}) => {
       }
       {getProfileData.isLoading && <Typography>Loading...</Typography>}
       {getProfileData.isSuccess && 
-        <>
-          <Grid2 item>
-            {
-              getProfileData.data.length === 0 && 
-              <Typography variant='h5' component='h1' textAlign='center' sx={{mt: 3}}>No Posts Yet...</Typography>
-            }
+      <>
+        {
+          getProfileData.data.length === 0 && 
+          <Grid2 >
+            <Typography variant='h5' component='h1' textAlign='center' sx={{mt: 3}}>No Posts Yet...</Typography>
           </Grid2>
-          {getProfileData.data.posts
-            .map((object => {
-              return <Grid2 item key={object._id}>  
-                <Cards 
-                  post={object.post_body}
-                  comments={object.comments}
-                  user={object.user.username}
-                  date={object.date}
-                  object={object}
-                  avatar={object.user.avatar?.image}
-                  variant={'outlined'}
-                  setToken={setToken}
-                  currentUser={currentUser}
-                  />
-              </Grid2>
-            }))
-          }
-        </>
+        }
+        {getProfileData.data.posts
+          .map((object => {
+            return <Grid2 container key={object._id}>  
+              <Cards 
+                post={object.post_body}
+                comments={object.comments}
+                user={object.user.username}
+                date={object.date}
+                avatar={object.user.avatar?.image}
+                object={object}
+                variant={'outlined'}
+                setToken={setToken}
+                currentUser={currentUser}
+                />
+            </Grid2>
+          }))
+        }
+      </>
       }
     </Grid2>
   </Grid2>
