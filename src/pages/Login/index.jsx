@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../api/user';
 
-const Login = ({setToken, setHasLogIn}) => {
+const Login = ({setToken, setHasLogIn, setCurrentUser}) => {
   const navigate = useNavigate()
   const [error, setErrors] = useState(null)
   const username = useRef(null)
@@ -18,7 +18,7 @@ const Login = ({setToken, setHasLogIn}) => {
       username: username.current.value,
       password: password.current.value
     })
-    login(credentials, setToken, navigate)
+    login(credentials, setToken, navigate, setCurrentUser)
   }
   return (
     <>

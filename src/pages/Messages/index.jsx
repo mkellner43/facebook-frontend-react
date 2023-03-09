@@ -68,10 +68,8 @@ const Messages = ({currentUser, setToken}) => {
     setSearchResults(friendQuery.data.filter( friend => {
       if(e.target.value.trim().length === 0) return null
       return friend.user.username.includes(e.target.value)
-    }
-      ))
+    }))
   }
-
   const getThreadMessages = () => {
     if(threadQuery.data.messages.length === 0) return <Grid2 height={1}>
       <Typography sx={{position: 'relative', top: '50%', textAlign: 'center', width: 1}}>No Messages Yet</Typography>
@@ -93,7 +91,7 @@ const Messages = ({currentUser, setToken}) => {
             </Typography>
           </Grid2>
           <Grid2 flexShrink={0}>
-            <Avatar>{(senderWasCurrentUser ? currentUser.first_name.split('')[0] + currentUser.last_name.split('')[0] : friend?.first_name.split('')[0] + friend?.last_name.split('')[0])}</Avatar>
+            <Avatar src={senderWasCurrentUser ? currentUser.avatar?.image : friend?.avatar?.image}>{(senderWasCurrentUser ? currentUser.first_name.split('')[0] + currentUser.last_name.split('')[0] : friend?.first_name.split('')[0] + friend?.last_name.split('')[0])}</Avatar>
           </Grid2>
         </Grid2>
       </Grid2>)}
@@ -108,7 +106,7 @@ const Messages = ({currentUser, setToken}) => {
           </Typography>
         </Grid2>
         <Grid2 xs={12} position="relative">
-          <TextField label="Search" variant="filled" size='small' fullWidth value={search} onChange={handleSearch} />
+          <TextField label="Search Friends" variant="filled" size='small' fullWidth value={search} onChange={handleSearch} />
           { searchResults.length > 0 && 
           <Grid2 sx={{ borderRadius: '1%', maxHeight: '200px', overflow:'scroll', backgroundColor:'rgba(0, 0, 0, 0.06)', borderBottomLeftRadius: '1%', borderBottomRightRadius: '1%'}}>
             {searchResults.map(result =>
@@ -121,7 +119,7 @@ const Messages = ({currentUser, setToken}) => {
                 setSearch('')
                 setSearchResults([])
               }} >
-              <Avatar sx={{m:1}}>
+              <Avatar sx={{m:1}} src={result.user.avatar?.image}>
                 {result.user.first_name.split('')[0] + result.user.last_name.split('')[0]}
               </Avatar>
               {result.user.username} 
@@ -141,7 +139,7 @@ const Messages = ({currentUser, setToken}) => {
                 onClick={() => {
                   setFriend(friend)
                 }}>
-                  <Avatar sx={{m:1}}>{friend?.first_name.split('')[0] + friend?.last_name.split('')[0]}</Avatar>
+                  <Avatar sx={{m:1}} src={friend?.avatar?.image}>{friend?.first_name.split('')[0] + friend?.last_name.split('')[0]}</Avatar>
                   {friend?.username}
                 </Button> }) }
           </Grid2>
@@ -208,6 +206,6 @@ const Messages = ({currentUser, setToken}) => {
 
 export default Messages;
 
-// add a notification snackbar on incoming notifications
-// add ability to post images 
-// add img on avatar 
+
+// work on like and comment live notifications
+// work on placeholders while data is loading

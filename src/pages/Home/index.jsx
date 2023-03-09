@@ -19,7 +19,7 @@ const Home = ({currentUser, setToken}) => {
   return (
     <Grid2 container spacing={3} sx={{flexDirection: {xs: 'column', sm:'row', lg: 'column'}, justifyContent: {xs: 'space-evenly', sm:'center'}, alignItems: {xs: 'center', sm: 'flex-start', lg: 'center'}}}>
       <Grid2 container item xs={12} sm={2} lg={12} sx={{justifyContent: {xs: "center", sm: 'flex-start'}, alignItems: {xs: 'center', sm: 'center'}}} flexDirection={'column'}>
-        <Avatar sx={{width: '5rem', height: '5rem'}} alt={''}>{currentUser.first_name.split('')[0]}{currentUser.last_name.split('')[0]}</Avatar>
+        <Avatar src={currentUser.avatar?.image} sx={{width: '5rem', height: '5rem'}} alt={''}>{currentUser.first_name.split('')[0]}{currentUser.last_name.split('')[0]}</Avatar>
         <Typography>{currentUser.username}</Typography>
       </Grid2>
       <Grid2 container item xs={11} sm={9} lg={7} rowSpacing={2} direction='column'>

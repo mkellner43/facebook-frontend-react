@@ -83,7 +83,7 @@ const Cards = ({post, comments, date, user, variant='outlined', avatar, object, 
         <Box sx={{mb: 2}}>
           <Chip 
             avatar=
-            {<Avatar>
+            {<Avatar src={comment.user.avatar?.image}>
               {comment.user.first_name.split('')[0]}
               {comment.user.last_name.split('')[0]}
               </Avatar>} 

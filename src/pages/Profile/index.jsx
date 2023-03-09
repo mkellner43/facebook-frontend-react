@@ -5,15 +5,15 @@ import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { Avatar, Typography, Button, Modal, Box } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import { profile } from '../../api/user';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import AvatarEdit from 'react-avatar-edit';
 import { updateAvatar } from '../../api/user';
 
-const Profile = ({currentUser, setToken}) => {
+const Profile = ({currentUser, setToken, setCurrentUser}) => {
   const location = useLocation();
   const [avatarModule, setAvatarModule] = useState(false);
   const [selectedImage, setSelectedImage] = useState(false);
-  const [avatarPic, setAvatarPic] = useState(null);
+  const queryClient = useQueryClient();
 
   const getProfileData = useQuery({
     queryKey: ['profile'],
@@ -21,9 +21,9 @@ const Profile = ({currentUser, setToken}) => {
   })
 
   const updateAvatarQuery = useMutation({
-    mutationFn: ({selectedImage, setToken}) => updateAvatar(selectedImage, setToken),
-    onSuccess: (data) => {
-      console.log(data)
+    mutationFn: ({selectedImage, setToken}) => updateAvatar(selectedImage, setToken, setCurrentUser),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['profile'])
     },
     onError: (err) => console.log(err)
   })
@@ -57,17 +57,15 @@ const Profile = ({currentUser, setToken}) => {
   }
 
   const handleSave = () => {
-    setAvatarPic(selectedImage)
     updateAvatarQuery.mutate({selectedImage, setToken})
     handleClose()
   }
 
-
   return (
     <Grid2 container spacing={3} sx={{flexDirection: {xs: 'column', sm:'row', lg: 'column'}, justifyContent: {xs: 'space-evenly', sm:'center'}, alignItems: {xs: 'center', sm: 'flex-start', lg: 'center'}}}>
     <Grid2 container item xs={12} sm={2} lg={12} sx={{justifyContent: {xs: "center", sm: 'flex-start'}, alignItems: {xs: 'center', sm: 'center'}}} flexDirection={'column'}>
-      <Avatar src={location.state.user.avatar?.image} sx={{width: '5rem', height: '5rem'}} alt={''}>{location.state.user.first_name.split('')[0]}{location.state.user.last_name.split('')[0]}</Avatar>
-      <Typography>{location.state.user.username}</Typography>
+      <Avatar src={getProfileData.data?.user.avatar?.image} sx={{width: '5rem', height: '5rem'}} alt={''}>{getProfileData.data?.user.first_name.split('')[0]}{getProfileData.data?.user.last_name.split('')[0]}</Avatar>
+      <Typography>{getProfileData.data?.user.username}</Typography>
       <Button variant='contained' size='small' component='label' onClick={() => setAvatarModule(true)}>
         update avatar
       </Button>
@@ -107,7 +105,7 @@ const Profile = ({currentUser, setToken}) => {
               <Typography variant='h5' component='h1' textAlign='center' sx={{mt: 3}}>No Posts Yet...</Typography>
             }
           </Grid2>
-          { getProfileData.data
+          {getProfileData.data.posts
             .map((object => {
               return <Grid2 item key={object._id}>  
                 <Cards 
@@ -116,6 +114,7 @@ const Profile = ({currentUser, setToken}) => {
                   user={object.user.username}
                   date={object.date}
                   object={object}
+                  avatar={object.user.avatar?.image}
                   variant={'outlined'}
                   setToken={setToken}
                   currentUser={currentUser}

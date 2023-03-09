@@ -1,4 +1,4 @@
-export const login = (loginCredentials, setToken, navigate) => {
+export const login = (loginCredentials, setToken, navigate, setCurrentUser) => {
   fetch('http://localhost:3000/api/v1/users/login', {
     method: 'post',
     headers: {
@@ -11,6 +11,7 @@ export const login = (loginCredentials, setToken, navigate) => {
   .then(res => res.json())
   .then(data => { 
     if(data) {
+      setCurrentUser(data)
       sessionStorage.setItem('user', JSON.stringify(data))
       setToken()
       navigate('/')
@@ -48,7 +49,7 @@ export const profile = (id, setToken) => {
   })
 }
 
-export const updateAvatar = (avatar, setToken) => {
+export const updateAvatar = (avatar, setToken, setCurrentUser) => {
   const sendableAvatar = JSON.stringify({avatar: avatar})
     return fetch('http://localhost:3000/api/v1/users/avatar', {
       method: 'put',
@@ -68,6 +69,7 @@ export const updateAvatar = (avatar, setToken) => {
       }
       return response.json()})
     .then((data) => {
+      setCurrentUser(data)
       sessionStorage.setItem('user', JSON.stringify(data))
       return data
     })

@@ -25,7 +25,7 @@ export const CreateNotificationCards = ({notification, setToken}) => {
     >
       <CardContent sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', pb: '16px !important'}}>
         <Box sx={{display: 'flex', alignItems: 'center', flexWrap: 'wrap'}}>
-          <Avatar>
+          <Avatar src={notification.requester.avatar?.image}>
             {notification.requester.first_name.split('')[0] + notification.requester.last_name.split('')[0]}
           </Avatar>
           <Typography sx={{ml:1}} >

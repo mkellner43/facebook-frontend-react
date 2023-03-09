@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useState} from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import {Routes, Route} from 'react-router-dom';
 import Home from './pages/Home';
@@ -12,19 +12,19 @@ import Notifications from './pages/Notifications';
 import { SocketProvider } from './context/SocketProvider';
 
 const App = () => {
+  const [currentUser, setCurrentUser] = useState(JSON.parse(sessionStorage.getItem('user')))
   let {token, setToken} = useToken();
-  const currentUser = JSON.parse(sessionStorage.getItem('user'))
 
-  if(!token || currentUser?.token !== token ) return <Auth setToken={setToken}/>
+  if(!token || currentUser?.token !== token ) return <Auth setToken={setToken} setCurrentUser={setCurrentUser} />
   
   
   return (
     <SocketProvider value={currentUser?.id}>
       <CssBaseline/>
-      <Nav currentUser={currentUser} setToken={setToken}/>
+      <Nav currentUser={currentUser} setToken={setToken} />
       <Routes>
         <Route element={<Home currentUser={currentUser} setToken={setToken} />} path="/"/>
-        <Route element={<Profile currentUser={currentUser} setToken={setToken} />} path="/profile" />
+        <Route element={<Profile currentUser={currentUser} setToken={setToken} setCurrentUser={setCurrentUser} />} path="/profile" />
         <Route element={<Friends currentUser={currentUser} setToken={setToken}  />} path="/friends" />
         <Route element={<Messages currentUser={currentUser} setToken={setToken} />} path='/messages' />
         <Route element={<Notifications currentUser={currentUser} setToken={setToken} />} path='/notifications' />

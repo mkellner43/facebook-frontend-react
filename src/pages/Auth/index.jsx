@@ -2,13 +2,13 @@ import { useState } from 'react';
 import Signup from '../Signup';
 import LogIn from '../Login';
 
-const Auth = ({setToken}) => {
+const Auth = ({setToken, setCurrentUser}) => {
   const [hasLogIn, setHasLogIn] = useState(true);
 
   if(hasLogIn) {
-    return <LogIn setHasLogIn={setHasLogIn} setToken={setToken} />
+    return <LogIn setHasLogIn={setHasLogIn} setToken={setToken} setCurrentUser={setCurrentUser}/>
   } else {
-    return <Signup setHasLogIn={setHasLogIn} setToken={setToken} />
+    return <Signup setHasLogIn={setHasLogIn} setToken={setToken} setCurrentUser={setCurrentUser}/>
   }
 }
 
