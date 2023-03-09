@@ -1,57 +1,83 @@
-import { useState, useRef } from 'react';
+import { Typography, TextField, Button } from '@mui/material';
+import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../api/user';
 
 const Login = ({setToken, setHasLogIn, setCurrentUser}) => {
   const navigate = useNavigate()
-  const [error, setErrors] = useState(null)
-  const username = useRef(null)
-  const password = useRef(null)
+  const [usernameError, setUsernameError] = useState(null)
+  const [passwordError, setPasswordError] = useState(null)
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
 
   const handleSubmit = (e) => {
     e.preventDefault()
     document.cookie = 'access_token= ; max-age=0'
-    if(!username.current.value || !password.current.value){
-      return setErrors('Username and password are required')
+    !username ? setUsernameError('Username is required') : setUsernameError(null)
+    !password ? setPasswordError('Password is required') : setPasswordError(null)
+    if(username && password) {
+      const credentials = JSON.stringify({
+        username: username,
+        password: password
+      })
+      login(credentials, setToken, navigate, setCurrentUser)
     }
-    const credentials = JSON.stringify({
-      username: username.current.value,
-      password: password.current.value
-    })
-    login(credentials, setToken, navigate, setCurrentUser)
   }
   return (
-    <>
-      <form>
-        <h1>Log In</h1>
-        <input 
-          ref={username}
-          className='mt-1' 
-          data-error={error ? true : false}
-          type='text' 
-          placeholder="username"
-          required
-          />
-        <input 
-          ref={password}
-          className='mt-1' 
-          data-error={error ? true : false} 
-          type='password' 
-          placeholder="password" 
-          required
-          />
-        <button 
-          className='btn mt-1'
+    <form style={{display: 'flex', justifyContent:'center', alignContent: 'center'}}>
+    <Grid2 container spacing={2} mt={5} width={250} justifyContent='center' alignItems='center'>
+      <Grid2 xs={12}>
+        <Typography variant='h2' component='h1' textAlign='center'>
+          Log In
+        </Typography>
+      </Grid2>
+      <Grid2 xs={12}>
+        <TextField
+          error={usernameError !== null}
+          helperText={usernameError}
+          fullWidth
+          value={username}
+          name='username'
+          onChange={(e) => setUsername(e.target.value)}
+          size='small'
+          label="Username"
+          type="text"
+        />
+      </Grid2>
+      <Grid2 xs={12}>
+        <TextField
+        error={passwordError !== null}
+        helperText={passwordError}
+        fullWidth
+        value={password}
+        name='password'
+        onChange={(e) => setPassword(e.target.value)}
+        size='small'
+        label="Password"
+        type="password"
+        autoComplete='new-password'
+        />
+      </Grid2>
+      <Grid2 xs={12}>
+        <Button 
           type="submit"
           onClick={handleSubmit}
+          variant='contained'
+          fullWidth
           >
-          Log In
-        </button>
-        <p className='error mt-1'>{error}</p>
-      </form>
-      <p>Don't have an account yet?</p>
-      <button onClick={() => setHasLogIn(prevState => !prevState)}>Sign up</button>
-    </>
+          Sign In
+        </Button>
+      </Grid2>
+      <Grid2>
+        <Typography variant='body1'>Don't have an account yet?</Typography>
+      </Grid2>
+      <Grid2>
+        <Button variant='outlined' type='button' onClick={() => setHasLogIn(prevState => !prevState)}>Sign up</Button>
+      </Grid2>  
+    </Grid2>
+    </form>
   )
 }
 

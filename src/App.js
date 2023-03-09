@@ -10,6 +10,8 @@ import Friends from './pages/Friends';
 import Messages from './pages/Messages';
 import Notifications from './pages/Notifications';
 import { SocketProvider } from './context/SocketProvider';
+import { Login } from '@mui/icons-material';
+import Signup from './pages/Signup';
 
 const App = () => {
   const [currentUser, setCurrentUser] = useState(JSON.parse(sessionStorage.getItem('user')))
@@ -17,13 +19,14 @@ const App = () => {
 
   if(!token || currentUser?.token !== token ) return <Auth setToken={setToken} setCurrentUser={setCurrentUser} />
   
-  
   return (
     <SocketProvider value={currentUser?.id}>
       <CssBaseline/>
       <Nav currentUser={currentUser} setToken={setToken} />
       <Routes>
         <Route element={<Home currentUser={currentUser} setToken={setToken} />} path="/"/>
+        <Route element={<Login/>} path="/login"/>
+        <Route element={<Signup/>} path="/signup"/>
         <Route element={<Profile currentUser={currentUser} setToken={setToken} setCurrentUser={setCurrentUser} />} path="/profile" />
         <Route element={<Friends currentUser={currentUser} setToken={setToken}  />} path="/friends" />
         <Route element={<Messages currentUser={currentUser} setToken={setToken} />} path='/messages' />

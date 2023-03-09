@@ -206,6 +206,6 @@ const Messages = ({currentUser, setToken}) => {
 
 export default Messages;
 
-
 // work on like and comment live notifications
 // work on placeholders while data is loading
+// sign in and up pages functional --> back and forth routing as well
