@@ -1,4 +1,4 @@
-import { Typography, Chip, Avatar } from "@mui/material";
+import { Typography, Avatar, Card, Button } from "@mui/material";
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { useNavigate } from "react-router-dom";
 
@@ -9,23 +9,33 @@ const MapFriends = ({friendQuery, handleConfirm}) => {
     <Typography>No current friends</Typography>
   :
   friendQuery.data.map(friend => {
-    return <Grid2 item key={friend.user._id} justifyContent='center' alignItems={'center'}>
-    <Chip
-      clickable
-      onClick={() => navigate('/profile', {state: {id: friend.user._id, user: friend.user, request_id: friend.request_id}})}
-        avatar= {
-          <Avatar src={friend.user.avatar?.image}>
+    return (
+      <Grid2 key={friend.request_id} xs={12}>
+        <Card variant="outlined" sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2}}>
+          <Avatar
+            variant='outlined'
+            sx={{mr: 1}}
+            onClick={() => navigate('/profile', {state: {id: friend.user._id, user: friend.user}})}
+            src={friend.user.avatar?.image}
+            >
             {friend.user.first_name.split('')[0]}
             {friend.user.last_name.split('')[0]}
           </Avatar>
-        } 
-      label={friend.user.first_name + " " + friend.user.last_name}
-      onDelete={() => handleConfirm(friend.request_id)}
-      variant='outlined' 
-    >
-    </Chip>
-    </Grid2>
-  })
-}
+          <Typography variant='h5' component='h2' flexGrow={1} noWrap
+          onClick={() => navigate('/profile', {state: {id: friend.user._id, user: friend.user}})}
+          >
+            {friend.user.first_name + ' ' + friend.user.last_name}
+          </Typography>
+          <Button
+          color="error"
+          onClick={() => handleConfirm(friend.request_id)}
+          >
+            Remove Friend
+          </Button>
+        </Card>
+      </Grid2>
+      )
+    })
+  }
 
 export default MapFriends;

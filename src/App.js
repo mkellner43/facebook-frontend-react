@@ -18,6 +18,16 @@ const App = () => {
   let {token, setToken} = useToken();
 
   if(!token || currentUser?.token !== token ) return <Auth setToken={setToken} setCurrentUser={setCurrentUser} />
+
+//   <Routes>
+//   <Route element={<Home currentUser={currentUser} setToken={setToken} />} path="/"/>
+//   <Route element={<Login/>} path="/login"/>
+//   <Route element={<Signup/>} path="/signup"/>
+//   <Route element={<Profile currentUser={currentUser} setToken={setToken} setCurrentUser={setCurrentUser} />} path="/profile" />
+//   <Route element={<Friends currentUser={currentUser} setToken={setToken}  />} path="/friends" />
+//   <Route element={<Messages currentUser={currentUser} setToken={setToken} />} path='/messages' />
+//   <Route element={<Notifications currentUser={currentUser} setToken={setToken} />} path='/notifications' />
+// </Routes>
   
   return (
     <SocketProvider value={currentUser?.id}>

@@ -12,6 +12,7 @@ const DeleteFriend = ({handleDelete, setOpen, open}) => {
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
+    borderRadius: '15px'
   };
 
   return (
@@ -27,15 +28,15 @@ const DeleteFriend = ({handleDelete, setOpen, open}) => {
         </Typography>
         <Box sx={{display: 'flex', justifyContent: 'space-evenly', mt: 2}}>
           <Button 
-            variant='contained' 
+            variant='outlined'
             color='error'
             onClick={handleDelete}  
           >
             Yes
           </Button>
           <Button 
-            variant='contained'
-            color='success'
+            variant='outlined'
+            color='primary'
             onClick={() => setOpen(false)}  
           >
             No
