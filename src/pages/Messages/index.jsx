@@ -75,10 +75,10 @@ const Messages = ({currentUser, setToken}) => {
       <Typography sx={{position: 'relative', top: '50%', textAlign: 'center', width: 1}}>No Messages Yet</Typography>
       </Grid2>
       
-    return threadQuery.data.messages.map(message => {
+    return threadQuery.data.messages.map((message, idx) => {
     const senderWasCurrentUser = message.sender === currentUser.id
     return (
-      <Grid2 container ref={scroll} p={3} xs={12} key={message._id} flexDirection="column" justifyContent='center' alignItems={senderWasCurrentUser ? 'flex-end' : 'flex-start'} flexWrap='nowrap'>
+      <Grid2 container ref={scroll} p={3} xs={12} key={message._id} flexDirection="column" justifyContent='center' alignItems={senderWasCurrentUser ? 'flex-end' : 'flex-start'} marginTop={idx === 0 && 'auto'}>
         <Grid2 >
           <Typography variant='caption'>
             {format(new Date(message.date), 'Pp')}
@@ -98,14 +98,14 @@ const Messages = ({currentUser, setToken}) => {
   )}
       
   return (
-    <Grid2 container spacing={{xs: 0, sm: 1}} justifyContent="space-evenly">
-      <Grid2 container xs={4} sm={4} height='85vh' overflow='scroll' flexDirection='column' alignItems={'center'} sx={{border: '1px solid rgba(0, 0, 0, 0.12)' , borderRadius: '1%'}} >
+    <Grid2 container spacing={{xs: 0, sm: 1}} height='85vh' justifyContent="space-evenly">
+      <Grid2 container xs={4} sm={4} flexDirection='column' alignItems={'center'} sx={{border: '1px solid rgba(0, 0, 0, 0.12)' , borderRadius: '1%', margin: 0}} height={1}>
         <Grid2 xs={12}>
           <Typography p={1} variant="h4" component='h1' textAlign='center'>
             Chats
           </Typography>
         </Grid2>
-        <Grid2 xs={12} position="relative">
+        <Grid2 xs={12}>
           <TextField label="Search Friends" variant="filled" size='small' fullWidth value={search} onChange={handleSearch} />
           { searchResults.length > 0 && 
           <Grid2 sx={{ borderRadius: '1%', maxHeight: '200px', overflow:'scroll', backgroundColor:'rgba(0, 0, 0, 0.06)', borderBottomLeftRadius: '1%', borderBottomRightRadius: '1%'}}>
@@ -144,40 +144,40 @@ const Messages = ({currentUser, setToken}) => {
                 </Button> }) }
           </Grid2>
       </Grid2>
-        {!threadQuery.data &&
-        <Grid2 container xs={8} sm={7} alignItems='center' flexDirection='column'>
+      <Grid2 container xs={8} sm={7} flexDirection='column' alignItems='center' justifyContent='center' height={1} sx={{margin: 0, border: threadQuery.isSuccess && '1px solid rgba(0, 0, 0, 0.12)' , borderRadius: '1%'}}>
+        {!threadQuery.data &&<>
             <Typography variant="h4" component='h1' mb={1}>
               No chats opened
             </Typography> 
             {threadQuery.isLoading && friend && <CircularProgress />}
-        </Grid2>}
+        </>}
         {threadQuery.isSuccess && friend && 
-          <Grid2 container xs={8} sm={7} height='85vh' sx={{border: threadQuery.isSuccess && '1px solid rgba(0, 0, 0, 0.12)' , borderRadius: '1%'}}>
-            <Grid2 xs={12} >
+          <Grid2 container height={1} xs={12}>
+            <Grid2 xs={12} height={.07} >
               <Paper elevation={5} sx={{background: 'rgba(0, 0, 0, 0.12)', width: 1}}>
                 <Typography variant="h4" component='h1' textAlign={'center'} >
                   {friend?.username}
                 </Typography>
               </Paper>
-            </Grid2>
-            <Grid2 container height={.88} xs={12} alignItems='flex-end' overflow='scroll' >
+              </Grid2>
+            <div style={{width: '100%', height: '86%', display: 'flex', padding: 4, flexDirection: 'column', overflow: 'scroll'}}>
               { getThreadMessages() }
               { typing && 
-              <Grid2 container alignItems='center' justifyContent='flex-start' p={3} xs={12}>
-                <Grid2>
-                  <Avatar>{friend?.first_name.split('')[0] + friend?.last_name.split('')[0]}</Avatar>
+                <Grid2 container justifyContent='flex-start' alignItems="center" p={3} xs={12}>
+                  <Grid2>
+                    <Avatar>{friend?.first_name.split('')[0] + friend?.last_name.split('')[0]}</Avatar>
+                  </Grid2>
+                  <Grid2>
+                    <div style={{height: '1.5rem', width: '4rem', backgroundColor: 'gray', borderRadius: '.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-evenly'}}>
+                      <span className='dot1'/>
+                      <span className='dot2'/>
+                      <span className='dot3'/>
+                    </div>
+                  </Grid2>
                 </Grid2>
-                <Grid2>
-                  <div style={{height: '1.5rem', width: '4rem', backgroundColor: 'gray', borderRadius: '.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-evenly'}}>
-                    <span className='dot1'/>
-                    <span className='dot2'/>
-                    <span className='dot3'/>
-                  </div>
-                </Grid2>
-              </Grid2>
               }
-            </Grid2>
-            <Grid2 container xs={12} alignItems='center' justifyContent='center'>
+              </div>
+            <Grid2 container xs={12} height={.07}>
             <form
               onSubmit={(e) => {
                 e.preventDefault()
@@ -190,7 +190,7 @@ const Messages = ({currentUser, setToken}) => {
                     setMessage(e.target.value)}}
                     onFocus={() => socket.emit('typing', friend?._id)} onBlur={() => socket.emit('not typing', friend?._id)} />
               </Grid2>
-              <Grid2 >
+              <Grid2>
                 <IconButton
                   type='submit'
                   disabled={message.trim().length === 0} >
@@ -198,9 +198,10 @@ const Messages = ({currentUser, setToken}) => {
                 </IconButton>
               </Grid2>
           </form>
-            </Grid2>
+        </Grid2>
       </Grid2>
         }
+    </Grid2>
     </Grid2>)
 }
 
@@ -208,4 +209,3 @@ export default Messages;
 
 // work on like and comment live notifications
 // work on placeholders while data is loading
-// sign in and up pages functional --> back and forth routing as well
