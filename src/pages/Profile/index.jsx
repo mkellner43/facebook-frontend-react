@@ -19,7 +19,7 @@ const Profile = ({currentUser, setToken, setCurrentUser}) => {
   location.state === null && navigate('/')
 
   const getProfileData = useQuery({
-    queryKey: ['profile'],
+    queryKey: ['profile', `${location.state.id}`],
     queryFn: () => profile(location.state.id, setToken),
   })
 
@@ -69,9 +69,10 @@ const Profile = ({currentUser, setToken, setCurrentUser}) => {
     <Grid2 container item xs={12} sm={2} lg={12} sx={{justifyContent: {xs: "center", sm: 'flex-start'}, alignItems: {xs: 'center', sm: 'center'}}} flexDirection={'column'}>
       <Avatar src={getProfileData.data?.user.avatar?.image} sx={{width: '5rem', height: '5rem'}} alt={''}>{getProfileData.data?.user.first_name.split('')[0]}{getProfileData.data?.user.last_name.split('')[0]}</Avatar>
       <Typography>{getProfileData.data?.user.username}</Typography>
+      {currentUser?.id === location.state?.id &&
       <Button variant='contained' size='small' component='label' onClick={() => setAvatarModule(true)}>
         update avatar
-      </Button>
+      </Button>}
       <Modal
         open={avatarModule}
         onClose={handleClose}
@@ -103,7 +104,7 @@ const Profile = ({currentUser, setToken, setCurrentUser}) => {
       {getProfileData.isSuccess && 
       <>
         {
-          getProfileData.data.length === 0 && 
+          getProfileData.data.posts.length === 0 && 
           <Grid2 >
             <Typography variant='h5' component='h1' textAlign='center' sx={{mt: 3}}>No Posts Yet...</Typography>
           </Grid2>
