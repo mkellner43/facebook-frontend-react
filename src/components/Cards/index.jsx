@@ -80,8 +80,10 @@ const Cards = ({post, comments, date, user, variant='outlined', avatar, object, 
   const post_comments = comments
     .map(comment => 
       <Box sx={{m: 2}} key={comment._id}>
-        <Box sx={{mb: 2}}>
+        <Box >
           <Chip 
+            clickable
+            onClick={() => navigate('/profile', {state: {id: comment.user._id, user: comment.user}})}
             avatar=
             {<Avatar src={comment.user.avatar?.image}>
               {comment.user.first_name.split('')[0]}
