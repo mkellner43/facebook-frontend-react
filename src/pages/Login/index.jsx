@@ -1,8 +1,9 @@
 import { Typography, TextField, Button } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { login } from '../../api/user';
+import { useMutation } from '@tanstack/react-query';
 
 const Login = ({setCurrentUser, setToken}) => {
   const navigate = useNavigate()
@@ -11,6 +12,13 @@ const Login = ({setCurrentUser, setToken}) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
+  const submitLogin = useMutation({
+    mutationFn: ({credentials, setToken, navigate, setCurrentUser}) => 
+    login(credentials, setToken, navigate, setCurrentUser),
+    onSuccess: () => {
+      console.log('you did it!')
+    }
+  })
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -22,7 +30,7 @@ const Login = ({setCurrentUser, setToken}) => {
         username: username,
         password: password
       })
-      login(credentials, setToken, navigate, setCurrentUser)
+      submitLogin.mutate({credentials, setToken, navigate, setCurrentUser})
     }
   }
   return (
@@ -74,8 +82,9 @@ const Login = ({setCurrentUser, setToken}) => {
         <Typography variant='body1'>Don't have an account yet?</Typography>
       </Grid2>
       <Grid2>
-        <Button variant='outlined' type='button' onClick={() => navigate('/signup')}>Sign up</Button>
-        {/* <Link to='/signup'>Sign Up</Link> */}
+        <Button variant='outlined' type='button' onClick={() => navigate('/signup')}>
+          Sign up
+        </Button>
       </Grid2>  
     </Grid2>
     </form>

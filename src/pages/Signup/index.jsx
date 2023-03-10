@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Typography, TextField, Button } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
+import { createUser } from '../../api/user';
+import { useMutation } from '@tanstack/react-query';
 
-const Signup = (setToken) => {
+const Signup = () => {
   const navigate = useNavigate()
   const [error, setError] = useState(null);
   const [username, setUsername] = useState('');
@@ -15,8 +17,29 @@ const Signup = (setToken) => {
   const [lastName, setLastName] = useState('');
   const [lastNameError, setLastNameError] = useState(null);
 
+  const submitNewUser = useMutation({
+    mutationFn: ({data, setError}) => 
+      createUser(data, setError),
+    onSuccess: (data, variables, context) => {
+      console.log(data, variables, context)
+      data.msg === 'user created!' &&
+      navigate('/login')
+    }
+  })
+
   const handleSubmit = (e) => {
     e.preventDefault()
+    if(validation()) {
+      const data = JSON.stringify({
+        username: username,
+        password: password,
+        first_name: firstName,
+        last_name: lastName
+      })
+      submitNewUser.mutate({data, setError})
+    }
+  }
+  const validation = () => {
     setUsernameError(null);
     setPasswordError(null);
     setFirstNameError(null);
@@ -25,40 +48,8 @@ const Signup = (setToken) => {
     !password && setPasswordError('Password is required')
     !firstName && setFirstNameError('First name is required')
     !lastName && setLastNameError('Last name is required')
-    if(username && password && firstName && lastName) {
-      const data = {
-        username: username,
-        password: password,
-        first_name: firstName,
-        last_name: lastName
-      }
-      fetch(`http://localhost:3000/api/v1/users/registration`, {
-        method: 'POST', headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
-      })
-      .then((res) => {
-        if(res.status === 409) {
-          setUsername('')
-          setPassword('')
-          setFirstName('')
-          setLastName('')
-          return setError('Account already exsists, please log in.')
-        }
-        if(!res.ok) return 
-        res.json()
-      })
-      .then((data) => { 
-        if(data) {
-          sessionStorage.setItem('user', JSON.stringify(data))
-          setToken()
-          navigate('/')
-        } 
-      })
-      .catch((err) => {
-        console.error("Error:", err)
-        setError(err)
-      })
-    }
+    if(username && password && firstName && lastName) return true 
+    return false
   }
   
   return (
@@ -136,7 +127,12 @@ const Signup = (setToken) => {
           <Typography variant='body1'>Already have an account?</Typography>
         </Grid2>
         <Grid2>
-        <Button variant='outlined' type='button' onClick={() => navigate('/login')}>Log In</Button>
+        <Button variant='outlined' type='button' onClick={() => navigate('/login')}>
+          Log In
+        </Button>
+        </Grid2>
+        <Grid2>
+          <Typography color='error'>{error}</Typography>
         </Grid2>
       </Grid2>
     </form>
@@ -144,3 +140,5 @@ const Signup = (setToken) => {
 }
 
 export default Signup;
+
+// creating new user is working, just need to redirect correctly to login

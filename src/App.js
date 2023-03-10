@@ -18,9 +18,9 @@ const App = () => {
 
   if(!token || currentUser?.token !== token ) return (
     <Routes>
-      <Route element={<Login setCurrentUser={setCurrentUser} setToken={setToken}/>} path='/login'/>
-      <Route element={<Signup  setToken={setToken}/>} path='/signup' />
-      <Route element={<Login setCurrentUser={setCurrentUser} setToken={setToken}/>} path='*'/>
+      <Route element={ <Login setCurrentUser={setCurrentUser} setToken={setToken}/> } path='/login' />
+      <Route element={ <Signup /> } path='/signup' />
+      <Route element={ <Login setCurrentUser={setCurrentUser} setToken={setToken} /> } path='*' />
     </Routes>
   )
   

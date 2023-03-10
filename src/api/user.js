@@ -1,4 +1,4 @@
-export const login = (loginCredentials, setToken, navigate, setCurrentUser) => {
+export const login = (credentials, setToken, navigate, setCurrentUser) => {
   fetch('http://localhost:3000/api/v1/users/login', {
     method: 'post',
     headers: {
@@ -6,7 +6,7 @@ export const login = (loginCredentials, setToken, navigate, setCurrentUser) => {
       'Access-Control-Allow-Credentials': 'true'
     },
     credentials: 'include',
-    body: loginCredentials
+    body: credentials
   })
   .then(res => res.json())
   .then(data => { 
@@ -20,6 +20,31 @@ export const login = (loginCredentials, setToken, navigate, setCurrentUser) => {
   .catch((err) => {
     console.error("Error:", err.message)
     return err
+  })
+}
+
+export const createUser = (data, setError) => {
+  return fetch(`http://localhost:3000/api/v1/users/registration`, {
+    method: 'POST', 
+    headers: {'Content-Type': 'application/json'},
+    body: data
+  })
+  .then((res) => {
+    if(res.status === 409) {
+      return setError('Account already exsists, please log in.')
+    }
+    if(!res.ok) return setError('Oops, something went wrong:(') 
+    return res.json()
+  })
+  .then((data) => { 
+    console.log(data)
+    if(data){
+      return data
+    }
+    })
+  .catch((err) => {
+    console.error("Error:", err)
+    setError(err)
   })
 }
 
