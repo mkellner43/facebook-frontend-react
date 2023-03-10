@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
-import {Routes, Route, Navigate} from 'react-router-dom';
+import {Routes, Route} from 'react-router-dom';
 import Home from './pages/Home';
 import Nav from './components/Nav';
 import Profile from './pages/Profile';
@@ -41,5 +41,3 @@ const App = () => {
 }
 
 export default App;
-
-// goal- create a facebook front end to use rails as the back end
