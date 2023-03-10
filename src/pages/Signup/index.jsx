@@ -140,5 +140,3 @@ const Signup = () => {
 }
 
 export default Signup;
-
-// creating new user is working, just need to redirect correctly to login
