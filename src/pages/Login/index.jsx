@@ -1,10 +1,10 @@
 import { Typography, TextField, Button } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../../api/user';
 
-const Login = ({setToken, setHasLogIn, setCurrentUser}) => {
+const Login = ({setCurrentUser, setToken}) => {
   const navigate = useNavigate()
   const [usernameError, setUsernameError] = useState(null)
   const [passwordError, setPasswordError] = useState(null)
@@ -74,7 +74,8 @@ const Login = ({setToken, setHasLogIn, setCurrentUser}) => {
         <Typography variant='body1'>Don't have an account yet?</Typography>
       </Grid2>
       <Grid2>
-        <Button variant='outlined' type='button' onClick={() => setHasLogIn(prevState => !prevState)}>Sign up</Button>
+        <Button variant='outlined' type='button' onClick={() => navigate('/signup')}>Sign up</Button>
+        {/* <Link to='/signup'>Sign Up</Link> */}
       </Grid2>  
     </Grid2>
     </form>

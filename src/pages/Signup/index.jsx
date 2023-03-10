@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Typography, TextField, Button } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 
-const Signup = ({setToken, setHasLogIn}) => {
+const Signup = (setToken) => {
   const navigate = useNavigate()
   const [error, setError] = useState(null);
   const [username, setUsername] = useState('');
@@ -136,9 +136,7 @@ const Signup = ({setToken, setHasLogIn}) => {
           <Typography variant='body1'>Already have an account?</Typography>
         </Grid2>
         <Grid2>
-          <Button variant='outlined' type='button' onClick={() => setHasLogIn(prevState => !prevState)}>
-            Log In
-          </Button>
+        <Button variant='outlined' type='button' onClick={() => navigate('/login')}>Log In</Button>
         </Grid2>
       </Grid2>
     </form>

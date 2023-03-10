@@ -110,6 +110,7 @@ export default function PersistentDrawerLeft({setToken, currentUser}) {
   const handleLogout = () => {
     document.cookie = 'access_token= ; max-age=0'
     sessionStorage.clear()
+    navigate('/login')
     setToken()
   }
 
