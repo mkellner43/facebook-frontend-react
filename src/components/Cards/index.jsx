@@ -128,7 +128,7 @@ const Cards = ({post, comments, date, user, variant='outlined', avatar, object, 
       <CardContent >
         <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
           <Box sx={{display: 'flex', alignItems: 'center'}} onClick={() => navigate('/profile', {state: {id: object.user._id, user: object.user}})}>
-            <Avatar src={avatar} sx={{width: '3rem', height: '3rem', mr: 2}} alt={''}>{currentUser.first_name.split('')[0]}{currentUser.last_name.split('')[0]}</Avatar>
+            <Avatar src={avatar} sx={{width: '3rem', height: '3rem', mr: 2}} alt={''}>{object.user.first_name.split('')[0]}{object.user.last_name.split('')[0]}</Avatar>
             <Typography variant="h3" fontSize='1rem' fontWeight={400} noWrap>
             {user}
             </Typography>
