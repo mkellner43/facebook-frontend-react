@@ -28,14 +28,8 @@ export const CreateNotificationCards = ({notification, setToken}) => {
           <Avatar src={notification.requester.avatar?.image}>
             {notification.requester.first_name.split('')[0] + notification.requester.last_name.split('')[0]}
           </Avatar>
-          <Typography sx={{ml:1}} >
-            {notification.requester.username}
-          </Typography>
         <Typography sx={{ml: 0.5}}>
-        {notification.type === 'Friend Request' && notification.data.status === 'pending' && 'sent you a '}
-        {notification.type === 'Friend Request' && notification.data.status === 'accepted' && 'accepted your '}
-        {notification.type === 'Message'  && 'sent you a '}
-        {notification.type.toLowerCase()}
+          {notification.msg}
         </Typography>
         </Box>
           <IconButton 

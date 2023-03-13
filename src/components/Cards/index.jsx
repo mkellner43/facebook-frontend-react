@@ -17,6 +17,8 @@ import {
   useQueryClient
 } from '@tanstack/react-query';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
+import { useSocket } from '../../context/SocketProvider';
+
 
 
 const Cards = ({post, comments, date, user, variant='outlined', avatar, object, setToken, currentUser}) => {
@@ -28,6 +30,7 @@ const Cards = ({post, comments, date, user, variant='outlined', avatar, object, 
   const [commentsVisable, setCommentsVisable] = useState(false);
   const [module, setModule] = useState(false);
   const queryClient = useQueryClient();
+  const socket = useSocket();
   
   const deleteThisPost = useMutation({
     mutationFn: deletePost,
@@ -49,8 +52,11 @@ const Cards = ({post, comments, date, user, variant='outlined', avatar, object, 
   const addLike = useMutation({
     mutationFn: postLike,
     onSuccess: (data, variables, context) => {
+      console.log(data.data.user)
+      if(data.msg === 'like added'){
+        socket?.emit('notification', {to_id: data.data.user, type: 'Like', msg: `${currentUser.username} liked your post!`})
+      }
       queryClient.invalidateQueries(['posts'])
-      console.log(data)
       console.log(variables)
       console.log(context)
     }

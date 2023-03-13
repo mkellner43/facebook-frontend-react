@@ -92,6 +92,7 @@ export const postLike = ({object, setToken}) => {
     } 
     else return res.json()
   })
+  .then(data => data)
   .catch(err => {
     console.error(err)
   })
