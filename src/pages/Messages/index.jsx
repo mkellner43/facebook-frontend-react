@@ -206,6 +206,3 @@ const Messages = ({currentUser, setToken}) => {
 }
 
 export default Messages;
-
-// work on like and comment live notifications
-// work on placeholders while data is loading

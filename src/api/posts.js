@@ -116,6 +116,7 @@ export const postComment = ({object, setToken, comment}) => {
       } 
       else return res.json()
     })
+    .then(data => data)
     .catch(err => {
       console.error(err)
     })

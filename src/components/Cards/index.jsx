@@ -44,7 +44,8 @@ const Cards = ({post, comments, date, user, variant='outlined', avatar, object, 
 
   const addComment = useMutation({
     mutationFn: postComment,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      socket?.emit('notification', {to_id: data.user, type: 'Comment', msg: `${currentUser.username} commented on your post!`})
       queryClient.invalidateQueries(['posts'])
     }
   })

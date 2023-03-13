@@ -42,7 +42,7 @@ const App = () => {
 
 export default App;
 
-// make live notifications for likes, comments
 // status indictors to see who is online
 // look into client error handling
 // refactor and seperate code for easier reading and working with
+// work on placeholders while data is loading
